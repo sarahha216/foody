@@ -69,40 +69,34 @@ class _SignUpFormState extends State<SignUpForm> {
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
 
-  bool isEmailValidation = true;
-  bool isPWValidation = true;
-  bool isConPassValidation = true;
+  String? isEmailValidation;
+  String? isPWValidation;
+  String? isConPassValidation;
 
   String id = "";
 
   Future<void> register() async{
-    if(isEmailValidation && isPWValidation && isConPassValidation){
-      if(password.text == conform.text){
-        try{
-          await firebaseAuth.createUserWithEmailAndPassword(email: email.text, password: password.text)
-              .then((value){
-            setState(() {
-              id = value.user!.uid;
-            });
-          });
+    try{
+      await firebaseAuth.createUserWithEmailAndPassword(email: email.text, password: password.text)
+          .then((value){
+        setState(() {
+          id = value.user!.uid;
+        });
+      });
 
-          Map<String, dynamic> map ={
-            'userID' : id,
-            'email': email.text,
-            'password': password.text,
-          };
+      Map<String, dynamic> map ={
+        'userID' : id,
+        'email': email.text,
+        'password': password.text,
+      };
 
-          FirebaseFirestore.instance.collection('users').doc(map['userID']).set(map).then((value){
-            showSnackBar(context, Colors.green, "Register successfully");
-            Navigator.pop(context);
-          });
-          Navigator.pop(context);
-        } on FirebaseAuthException catch(e){
-          showSnackBar(context, Colors.red, e.message.toString());
-        }
-      }else{
-        showSnackBar(context, Colors.red, "Password does not match");
-      }
+      FirebaseFirestore.instance.collection('users').doc(map['userID']).set(map).then((value){
+        showSnackBar(context, Colors.green, "Register successfully");
+        Navigator.pop(context);
+      });
+      Navigator.pop(context);
+    } on FirebaseAuthException catch(e){
+      showSnackBar(context, Colors.red, e.message.toString());
     }
   }
 
@@ -124,7 +118,12 @@ class _SignUpFormState extends State<SignUpForm> {
             ContinueButtonWidget.base(
                 label: 'Continue',
                 voidCallback: () {
-                  register();
+
+                  if(_formKey.currentState!.validate()){
+                    _formKey.currentState!.save();
+                    print('valid');
+                    register();
+                  }
             }),
             SizedBox(height: 30,),
             SocialButtonWidget.base(),
@@ -141,12 +140,16 @@ class _SignUpFormState extends State<SignUpForm> {
         hintText: "Enter your email",
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: Icon(Icons.email_outlined),
-        errorText: !isEmailValidation ? "Please check your email!" :null,
       ),
 
-      onChanged: (text){
+      validator: (text){
+        print('email is validating');
+        return isEmailValidation = validateEmail(email.text);
+      },
+      onSaved: (value){
         setState(() {
-          isEmailValidation = validateEmail(email.text);
+          print('email is saved');
+          email.text = value!;
         });
       },
     );
@@ -162,12 +165,10 @@ class _SignUpFormState extends State<SignUpForm> {
         hintText: "Enter your password",
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: Icon(Icons.lock_outline),
-        errorText: !isPWValidation ? "Please check your password!" : null,
       ),
-      onChanged: (text){
-        setState(() {
-          isPWValidation = validatePassword(password.text);
-        });
+      validator: (text){
+        print('password is validating');
+        return isPWValidation = validatePassword(password.text);
       },
     );
   }
@@ -181,11 +182,16 @@ class _SignUpFormState extends State<SignUpForm> {
         hintText: "Re-enter your password",
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: Icon(Icons.lock_outline),
-        errorText: !isConPassValidation ? "Please check your confirm password!" : null,
       ),
-      onChanged: (text){
+      validator: (text){
+        print('conform is validating');
+        var pass = _passKey.currentState!.value;
+        return isConPassValidation = conformPassword(conform.text, pass);
+      },
+      onSaved: (value){
         setState(() {
-          isConPassValidation = conformPassword(password.text, conform.text);
+          print('conform is saved');
+          conform.text = value!;
         });
       },
     );

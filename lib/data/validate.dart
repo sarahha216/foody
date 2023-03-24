@@ -1,29 +1,33 @@
-bool validateEmail(String value) {
+String? validateEmail(String value) {
   if(value.isEmpty){
-    return false;
+    return 'Please enter email';
   }
   String pattern =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
   RegExp regex = RegExp(pattern);
-  return (regex.hasMatch(value)) ? true : false;
+  if (!regex.hasMatch(value)){
+    return 'Enter valid email';
+  }else{
+    return null;
+  }
 }
 
 
-bool validatePassword(String value){
+String? validatePassword(String value){
   if(value.isEmpty){
-    return false;
+    return 'Please enter email';
   }
   if(value.length<8){
-    return false;
+    return 'Password should be more than 8 characters';
   }
-  return true;
+  return null;
 }
 
-bool conformPassword(String value, String value2){
+String? conformPassword(String value, String value2){
   if(value!=value2){
-    return false;
+    return 'Conform password invalid';
   }
   else{
-    return true;
+    return null;
   }
 }

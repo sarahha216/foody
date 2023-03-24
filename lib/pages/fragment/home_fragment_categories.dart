@@ -20,7 +20,7 @@ class _CategoriesStoreState extends State<CategoriesStore> {
         width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
-            TitleCate(titleCate: "Categories",seeMore: cateFunc,),
+            TitleCate.base(titleCate: "Categories",seeMore: cateFunc,),
             SizedBox(height: 10,),
             Container(
               width: MediaQuery.of(context).size.width,

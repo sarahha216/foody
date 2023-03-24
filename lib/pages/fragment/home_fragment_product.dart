@@ -21,7 +21,7 @@ class _ProductPopularState extends State<ProductPopular> {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          TitleCate(titleCate: "Popular Products",seeMore: productFunc,),
+          TitleCate.base(titleCate: "Popular Products",seeMore: productFunc,),
           SizedBox(height: 10,),
           Container(
             child: GridView.builder(
