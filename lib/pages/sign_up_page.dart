@@ -68,11 +68,6 @@ class _SignUpFormState extends State<SignUpForm> {
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
-
-  String? isEmailValidation;
-  String? isPWValidation;
-  String? isConPassValidation;
-
   String id = "";
 
   Future<void> register() async{
@@ -116,7 +111,7 @@ class _SignUpFormState extends State<SignUpForm> {
             conformTextFormField(),
             SizedBox(height: 30,),
             ContinueButtonWidget.base(
-                label: 'Continue',
+                label: 'Sign Up',
                 voidCallback: () {
 
                   if(_formKey.currentState!.validate()){
@@ -144,7 +139,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
       validator: (text){
         print('email is validating');
-        return isEmailValidation = validateEmail(email.text);
+        return validateEmail(email.text);
       },
       onSaved: (value){
         setState(() {
@@ -168,7 +163,7 @@ class _SignUpFormState extends State<SignUpForm> {
       ),
       validator: (text){
         print('password is validating');
-        return isPWValidation = validatePassword(password.text);
+        return validatePassword(password.text);
       },
     );
   }
@@ -186,7 +181,7 @@ class _SignUpFormState extends State<SignUpForm> {
       validator: (text){
         print('conform is validating');
         var pass = _passKey.currentState!.value;
-        return isConPassValidation = conformPassword(conform.text, pass);
+        return conformPassword(conform.text, pass);
       },
       onSaved: (value){
         setState(() {

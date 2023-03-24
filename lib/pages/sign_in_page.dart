@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foody/data/validate.dart';
+import 'package:foody/pages/home_page.dart';
 import 'package:foody/pages/sign_up_page.dart';
 import 'package:foody/widgets/button_continue_widget.dart';
 import 'package:foody/widgets/navigator_widget.dart';
@@ -58,6 +61,8 @@ class _SignInFormState extends State<SignInForm> {
   final _formKey = GlobalKey<FormState>();
   bool _value = false;
 
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
   var prefs;
   final username = TextEditingController();
   final password = TextEditingController();
@@ -76,6 +81,26 @@ class _SignInFormState extends State<SignInForm> {
       password.text = prefs.getString('password');
       _value = prefs.getBool('check');
     };
+  }
+
+  Future<void> signIn(String email, String pass) async {
+    if(_formKey.currentState!.validate()){
+      _formKey.currentState!.save();
+      print('valid');
+      try {
+        await firebaseAuth
+            .signInWithEmailAndPassword(email: email, password: pass)
+            .then((value) {
+          showSnackBar(context, Colors.green, "Sign in successfully");
+          nextScreenRemove(context, HomePage());
+        });
+      } on FirebaseAuthException catch (e) {
+        showSnackBar(context, Colors.red, e.message.toString());
+      }
+    }
+    else{
+      showSnackBar(context, Colors.red, 'Please fix error!');
+    }
   }
 
 
@@ -102,16 +127,26 @@ class _SignInFormState extends State<SignInForm> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              TextField(
+              TextFormField(
                 controller: username,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Username",
                   prefixIcon: Icon(Icons.mail_outline),
                 ),
+                validator: (text){
+                  print('email is validating');
+                  return validateEmail(username.text);
+                },
+                onSaved: (value){
+                  setState(() {
+                    print('email is saved');
+                    username.text = value!;
+                  });
+                },
               ),
               SizedBox(height: 5,),
-              TextField(
+              TextFormField(
                 controller: password,
                 keyboardType: TextInputType.number,
                 obscureText: true,
@@ -120,6 +155,10 @@ class _SignInFormState extends State<SignInForm> {
                   hintText: "Password",
                   prefixIcon: Icon(Icons.lock_outline_rounded),
                 ),
+                validator: (text){
+                  print('password is validating');
+                  return validatePassword(password.text);
+                },
               ),
               SizedBox(height: 5,),
               Row(
@@ -133,9 +172,9 @@ class _SignInFormState extends State<SignInForm> {
                 ],
               ),
               ContinueButtonWidget.base(
-                  label: 'Continue',
+                  label: 'Sign In',
                   voidCallback: () {
-
+                    signIn(username.text, password.text);
               }),
               SizedBox(height: 5,),
               SocialButtonWidget.base(),
