@@ -1,4 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foody/pages/pages.dart';
+import 'package:foody/widgets/button_continue_widget.dart';
+import 'package:foody/widgets/navigator_widget.dart';
 import 'package:foody/widgets/social_widget.dart';
 
 class AccountDetail extends StatefulWidget {
@@ -15,6 +19,12 @@ class _AccountDetailState extends State<AccountDetail> {
 
   final _formKey = GlobalKey<FormState>();
   var _passKey = GlobalKey<FormFieldState>();
+
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
+  Future signOut() async {
+    await firebaseAuth.signOut();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +43,10 @@ class _AccountDetailState extends State<AccountDetail> {
                 SizedBox(height: 30,),
                 conformTextFormField(),
                 SizedBox(height: 30,),
-                SizedBox(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width,
-                  child: ElevatedButton(onPressed: (){},
-                    child: Text("Continue", style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: Colors.white,),),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                    ),
-                  ),
-                ),
+                ContinueButtonWidget.base(label: 'Sign out', voidCallback: (){
+                  signOut();
+                  nextScreenRemove(context, SignInPage());
+                }),
                 SizedBox(height: 30,),
                 SocialButtonWidget.base(),
               ],
