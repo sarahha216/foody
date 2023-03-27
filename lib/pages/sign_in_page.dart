@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foody/data/handle/auth_service.dart';
 import 'package:foody/data/validate.dart';
 import 'package:foody/pages/home_page.dart';
 import 'package:foody/pages/sign_up_page.dart';
@@ -62,6 +63,7 @@ class _SignInFormState extends State<SignInForm> {
   bool _value = false;
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  AuthService authService = AuthService();
 
   var prefs;
   final username = TextEditingController();
@@ -83,23 +85,21 @@ class _SignInFormState extends State<SignInForm> {
     };
   }
 
-  Future<void> signIn(String email, String pass) async {
+  login() async {
     if(_formKey.currentState!.validate()){
       _formKey.currentState!.save();
       print('valid');
-      try {
-        await firebaseAuth
-            .signInWithEmailAndPassword(email: email, password: pass)
-            .then((value) {
+      await authService
+          .login(username.text, password.text)
+          .then((value) async {
+        if(value==true){
           showSnackBar(context, Colors.green, "Sign in successfully");
           nextScreenRemove(context, HomePage());
-        });
-      } on FirebaseAuthException catch (e) {
-        showSnackBar(context, Colors.red, e.message.toString());
-      }
-    }
-    else{
-      showSnackBar(context, Colors.red, 'Please fix error!');
+        }
+        else{
+          showSnackBar(context, Colors.red, value);
+        }
+      });
     }
   }
 
@@ -174,7 +174,7 @@ class _SignInFormState extends State<SignInForm> {
               ContinueButtonWidget.base(
                   label: 'Sign In',
                   voidCallback: () {
-                    signIn(username.text, password.text);
+                    login();
               }),
               SizedBox(height: 5,),
               SocialButtonWidget.base(),

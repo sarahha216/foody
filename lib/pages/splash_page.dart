@@ -1,17 +1,35 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foody/pages/home_page.dart';
 import 'package:foody/pages/pages.dart';
 import 'package:foody/widgets/navigator_widget.dart';
 
 
-class SplashPage extends StatelessWidget {
+class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    new Future.delayed(new Duration(seconds: 3),(){
-      nextScreenRemove(context, SignInPage());
+  State<SplashPage> createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<SplashPage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(const Duration(seconds: 3), () {
+      if(FirebaseAuth.instance.currentUser != null){
+        nextScreenRemove(context, HomePage());
+      }
+      else{
+        nextScreenRemove(context, SignInPage());
+      }
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,

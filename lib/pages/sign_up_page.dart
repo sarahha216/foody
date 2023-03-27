@@ -1,9 +1,6 @@
-import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:foody/data/handle/auth_service.dart';
 import 'package:foody/data/validate.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:foody/widgets/button_continue_widget.dart';
 import 'package:foody/widgets/navigator_widget.dart';
 import '../widgets/social_widget.dart';
@@ -66,32 +63,21 @@ class _SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
   var _passKey = GlobalKey<FormFieldState>();
 
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  AuthService authService = AuthService();
 
-  String id = "";
-
-  Future<void> register() async{
-    try{
-      await firebaseAuth.createUserWithEmailAndPassword(email: email.text, password: password.text)
-          .then((value){
-        setState(() {
-          id = value.user!.uid;
-        });
+  register() async{
+    if(_formKey.currentState!.validate()){
+      _formKey.currentState!.save();
+      print('valid');
+      await authService.register(email.text, password.text).then((value) async {
+        if(value==true){
+          showSnackBar(context, Colors.green, "Register successfully");
+          Navigator.pop(context);
+        }
+        else{
+          showSnackBar(context, Colors.red, value);
+        }
       });
-
-      Map<String, dynamic> map ={
-        'userID' : id,
-        'email': email.text,
-        'password': password.text,
-      };
-
-      FirebaseFirestore.instance.collection('users').doc(map['userID']).set(map).then((value){
-        showSnackBar(context, Colors.green, "Register successfully");
-        Navigator.pop(context);
-      });
-      Navigator.pop(context);
-    } on FirebaseAuthException catch(e){
-      showSnackBar(context, Colors.red, e.message.toString());
     }
   }
 
@@ -113,12 +99,8 @@ class _SignUpFormState extends State<SignUpForm> {
             ContinueButtonWidget.base(
                 label: 'Sign Up',
                 voidCallback: () {
+                  register();
 
-                  if(_formKey.currentState!.validate()){
-                    _formKey.currentState!.save();
-                    print('valid');
-                    register();
-                  }
             }),
             SizedBox(height: 30,),
             SocialButtonWidget.base(),

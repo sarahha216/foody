@@ -15,7 +15,7 @@ String? validateEmail(String value) {
 
 String? validatePassword(String value){
   if(value.isEmpty){
-    return 'Please enter email';
+    return 'Please enter password';
   }
   if(value.length<8){
     return 'Password should be more than 8 characters';
