@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:foody/data/models/user_model.dart';
 
 class AuthService{
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -34,4 +35,15 @@ class AuthService{
       return e.message;
     }
   }
+
+  Future<Map<String, dynamic>?> getUserData() async{
+    Map<String, dynamic>? userData;
+    await FirebaseFirestore.instance.collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) async{
+      userData = value.data();
+    });
+    return userData;
+  }
+
+
 }

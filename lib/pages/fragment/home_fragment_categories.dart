@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:foody/data/models/category_model.dart';
 import 'package:foody/widgets/title_cate.dart';
 
 class CategoriesStore extends StatefulWidget {
@@ -25,13 +27,31 @@ class _CategoriesStoreState extends State<CategoriesStore> {
             Container(
               width: MediaQuery.of(context).size.width,
               height: 150,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 3,
-                itemBuilder: (context, index){
-                  return CategoriesItem();
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance.collection('categories').snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapShot){
+                  if(snapShot.hasData){
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: snapShot.data!.docs.length,
+                      itemBuilder: (context, index){
+                        CategoryModel cate = CategoryModel.fromJson(snapShot.data!.docs[index].data() as Map<String, dynamic>);
+                        return Container(
+                          width: 150,
+                          height: 150,
+                          alignment: Alignment.centerLeft,
+                          child: ClipRRect(
+                            child: Image.network(cate.image),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  else{
+                    return const Center(child: CircularProgressIndicator());
+                  }
                 },
-              ),
+              )
             ),
           ],
         ),
@@ -40,21 +60,21 @@ class _CategoriesStoreState extends State<CategoriesStore> {
   }
 }
 
-class CategoriesItem extends StatefulWidget {
-  const CategoriesItem({Key? key}) : super(key: key);
-
-  @override
-  State<CategoriesItem> createState() => _CategoriesItemState();
-}
-
-class _CategoriesItemState extends State<CategoriesItem> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 150,
-      height: 150,
-      alignment: Alignment.centerLeft,
-      child: Image.asset("assets/images/ic_highland.png"),
-    );
-  }
-}
+// class CategoriesItem extends StatefulWidget {
+//   const CategoriesItem({Key? key}) : super(key: key);
+//
+//   @override
+//   State<CategoriesItem> createState() => _CategoriesItemState();
+// }
+//
+// class _CategoriesItemState extends State<CategoriesItem> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       width: 150,
+//       height: 150,
+//       alignment: Alignment.centerLeft,
+//       child: Image.asset("assets/images/ic_highland.png"),
+//     );
+//   }
+// }
