@@ -74,15 +74,6 @@ class _ProductItemState extends State<ProductItem> {
                 fit: BoxFit.fill,
               ),
             ),
-            // Expanded(
-            //   child: Text('dfddsffffffffffffffffffffffffff',
-            //     overflow: TextOverflow.ellipsis,
-            //     style: TextStyle(
-            //       fontSize: 16,
-            //       fontWeight: FontWeight.bold,
-            //     ),
-            //   ),
-            // ),
             Container(
               padding: EdgeInsets.only(left: 4),
               width: cardSize-4,
