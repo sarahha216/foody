@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:foody/data/models/category_model.dart';
 import 'package:foody/data/models/user_model.dart';
 
 class AuthService{
@@ -45,13 +46,16 @@ class AuthService{
     return userData;
   }
 
-  Future<Map<String, dynamic>?> getCateData(String cateid) async{
-    Map<String, dynamic>? cateData;
+  Future<CategoryModel?> getCateData(String cateid) async{
+    CategoryModel? cate;
     await FirebaseFirestore.instance.collection('categories')
         .doc(cateid).get().then((value) async{
-      cateData = value.data();
+          // var data = value.data();
+          // cate = CategoryModel(id: data?['id'], title: data?['title'], image: data?['image']);
+          var data = value.data();
+          cate = CategoryModel.fromJson(data ?? {});
     });
-    return cateData;
+    return cate;
   }
 
 

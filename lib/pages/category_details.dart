@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:foody/data/models/category_model.dart';
 
 class CategoryDetails extends StatefulWidget {
-  final Map<String, dynamic> cateDetail;
+  final CategoryModel cateDetail;
   const CategoryDetails({Key? key, required this.cateDetail }) : super(key: key);
 
   @override
@@ -17,7 +18,7 @@ class _CategoryDetailsState extends State<CategoryDetails> {
         elevation: 0,
       ),
       body: Text(
-        widget.cateDetail.toString(),
+        widget.cateDetail.image,
       ),
     );
   }
