@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:foody/data/handle/auth_service.dart';
 import 'package:foody/data/models/category_model.dart';
+import 'package:foody/pages/category_details.dart';
+import 'package:foody/widgets/navigator_widget.dart';
 import 'package:foody/widgets/title_cate.dart';
 
 class CategoriesStore extends StatefulWidget {
@@ -11,6 +14,9 @@ class CategoriesStore extends StatefulWidget {
 }
 
 class _CategoriesStoreState extends State<CategoriesStore> {
+
+  AuthService authService = AuthService();
+
   Future cateFunc() async{
     print('cate');
   }
@@ -40,8 +46,14 @@ class _CategoriesStoreState extends State<CategoriesStore> {
                           width: 150,
                           height: 150,
                           alignment: Alignment.centerLeft,
-                          child: ClipRRect(
-                            child: Image.network(cate.image),
+                          child: GestureDetector(
+                            onTap: () async{
+                              Map<String, dynamic>? cateData = await authService.getCateData(cate.id);
+                              nextScreen(context, CategoryDetails(cateDetail: cateData!,));
+                            },
+                            child: ClipRRect(
+                              child: Image.network(cate.image),
+                            ),
                           ),
                         );
                       },

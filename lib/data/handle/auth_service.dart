@@ -45,5 +45,14 @@ class AuthService{
     return userData;
   }
 
+  Future<Map<String, dynamic>?> getCateData(String cateid) async{
+    Map<String, dynamic>? cateData;
+    await FirebaseFirestore.instance.collection('categories')
+        .doc(cateid).get().then((value) async{
+      cateData = value.data();
+    });
+    return cateData;
+  }
+
 
 }
