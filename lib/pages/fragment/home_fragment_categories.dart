@@ -52,7 +52,7 @@ class _CategoriesStoreState extends State<CategoriesStore> {
                               nextScreen(context, CategoryDetails(cateDetail: cateData!,));
                             },
                             child: ClipRRect(
-                              child: Image.network(cate.image),
+                              child: Image.network(cate.image, fit: BoxFit.fill,),
                             ),
                           ),
                         );

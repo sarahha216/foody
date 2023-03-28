@@ -16,6 +16,12 @@ class _CategoryDetailsState extends State<CategoryDetails> {
       appBar: AppBar(
         title: Text("Detail"),
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Text(
         widget.cateDetail.image,

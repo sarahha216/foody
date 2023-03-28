@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:foody/data/models/category_model.dart';
+import 'package:foody/data/models/product_model.dart';
 import 'package:foody/data/models/user_model.dart';
 
 class AuthService{
@@ -58,5 +59,13 @@ class AuthService{
     return cate;
   }
 
-
+  Future<ProductModel?> getProductData(String productid) async{
+    ProductModel? product;
+    await FirebaseFirestore.instance.collection('products')
+        .doc(productid).get().then((value) async{
+      var data = value.data();
+      product = ProductModel(id: data?['id'], title: data?['title'], description: data?['description'], image: data?['image'], price: data?['price'].toDouble());
+    });
+    return product;
+  }
 }
