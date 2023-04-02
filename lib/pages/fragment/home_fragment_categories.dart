@@ -47,9 +47,9 @@ class _CategoriesStoreState extends State<CategoriesStore> {
                           height: 150,
                           alignment: Alignment.centerLeft,
                           child: GestureDetector(
-                            onTap: () async{
-                              CategoryModel? cateData = await authService.getCateData(cate.id);
-                              nextScreen(context, CategoryDetails(cateDetail: cateData!,));
+                            onTap: () {
+                              //CategoryModel? cateData = await authService.getCateData(cate.id);
+                              nextScreen(context, CategoryDetails(cateDetail: cate,));
                             },
                             child: ClipRRect(
                               child: Image.network(cate.image, fit: BoxFit.fill,),

@@ -46,7 +46,6 @@ class _ProductPopularState extends State<ProductPopular> {
                         childAspectRatio: 0.7,
                       ),
                       itemBuilder: (context, index){
-                        // ProductModel product = ProductModel.fromJson(snapShot.data!.docs[index].data() as Map<String, dynamic>);
                         var value = snapShot.data!.docs[index];
                         ProductModel product = ProductModel(id: value['id'], title: value['title'], description: value['description'], image: value['image'], price: value['price'].toDouble());
 
@@ -68,9 +67,8 @@ class _ProductPopularState extends State<ProductPopular> {
     int count = contentWidth ~/ 100;
     double cardSize = (contentWidth - 8.0 * 2 - (count - 1) * 8.0) / count;
     return GestureDetector(
-      onTap: () async{
-        ProductModel? productData = await authService.getProductData(productModel.id);
-        nextScreen(context, ProductDetails(productData: productData!,));
+      onTap: (){
+        nextScreen(context, ProductDetails(productData: productModel,));
       },
       child: Container(
         decoration: BoxDecoration(

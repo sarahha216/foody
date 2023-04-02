@@ -7,7 +7,7 @@ import 'package:foody/data/models/user_model.dart';
 class AuthService{
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
-  Future register(String email, String password) async{
+  Future register(String email, String password, String name, String address, String moblie) async{
     try{
       User user = (await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password)).user!;
 
@@ -15,6 +15,9 @@ class AuthService{
         Map<String, dynamic> map ={
           'email': email,
           'password': password,
+          'name': name,
+          'address': address,
+          'moblie': moblie,
         };
         FirebaseFirestore.instance.collection('users').doc(user.uid).set(map);
         return true;

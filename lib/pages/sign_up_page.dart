@@ -56,6 +56,10 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
+  final name = TextEditingController();
+  final moblie = TextEditingController();
+  final address = TextEditingController();
+
   final email = TextEditingController();
   final password = TextEditingController();
   final conform = TextEditingController();
@@ -69,7 +73,7 @@ class _SignUpFormState extends State<SignUpForm> {
     if(_formKey.currentState!.validate()){
       _formKey.currentState!.save();
       print('valid');
-      await authService.register(email.text, password.text).then((value) async {
+      await authService.register(email.text, password.text, name.text, address.text, moblie.text).then((value) async {
         if(value==true){
           showSnackBar(context, Colors.green, "Register successfully");
           Navigator.pop(context);
@@ -90,6 +94,12 @@ class _SignUpFormState extends State<SignUpForm> {
         child: Column(
           children: [
             SizedBox(height: 30,),
+            nameTextFormField(),
+            SizedBox(height: 30,),
+            addressTextFormField(),
+            SizedBox(height: 30,),
+            mobileTextFormField(),
+            SizedBox(height: 30,),
             emailTextFormField(),
             SizedBox(height: 30,),
             passwordTextFormField(),
@@ -107,6 +117,42 @@ class _SignUpFormState extends State<SignUpForm> {
           ],
         ),
       ),);
+  }
+  TextFormField nameTextFormField() {
+    return TextFormField(
+      controller: name,
+      keyboardType: TextInputType.name,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        hintText: "Enter your name",
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: Icon(Icons.person_outline),
+      ),
+    );
+  }
+  TextFormField addressTextFormField() {
+    return TextFormField(
+      controller: address,
+      keyboardType: TextInputType.streetAddress,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        hintText: "Enter your address",
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: Icon(Icons.home_outlined),
+      ),
+    );
+  }
+  TextFormField mobileTextFormField() {
+    return TextFormField(
+      controller: moblie,
+      keyboardType: TextInputType.phone,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        hintText: "Enter your moblie",
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: Icon(Icons.phone),
+      ),
+    );
   }
   TextFormField emailTextFormField() {
     return TextFormField(
