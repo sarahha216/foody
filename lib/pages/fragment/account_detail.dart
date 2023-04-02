@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foody/data/handle/auth_service.dart';
 import 'package:foody/pages/pages.dart';
 import 'package:foody/widgets/button_continue_widget.dart';
 import 'package:foody/widgets/navigator_widget.dart';
@@ -13,6 +15,10 @@ class AccountDetail extends StatefulWidget {
 }
 
 class _AccountDetailState extends State<AccountDetail> {
+  final name = TextEditingController();
+  final moblie = TextEditingController();
+  final address = TextEditingController();
+
   final email = TextEditingController();
   final password = TextEditingController();
   final conform = TextEditingController();
@@ -21,6 +27,7 @@ class _AccountDetailState extends State<AccountDetail> {
   var _passKey = GlobalKey<FormFieldState>();
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  AuthService authService = AuthService();
 
   Future signOut() async {
     await firebaseAuth.signOut();
@@ -52,6 +59,42 @@ class _AccountDetailState extends State<AccountDetail> {
               ],
             ),
           ),),
+      ),
+    );
+  }
+  TextFormField nameTextFormField() {
+    return TextFormField(
+      controller: name,
+      keyboardType: TextInputType.name,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        hintText: "Enter your name",
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: Icon(Icons.person_outline),
+      ),
+    );
+  }
+  TextFormField addressTextFormField() {
+    return TextFormField(
+      controller: address,
+      keyboardType: TextInputType.streetAddress,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        hintText: "Enter your address",
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: Icon(Icons.home_outlined),
+      ),
+    );
+  }
+  TextFormField mobileTextFormField() {
+    return TextFormField(
+      controller: moblie,
+      keyboardType: TextInputType.phone,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        hintText: "Enter your moblie",
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: Icon(Icons.phone),
       ),
     );
   }

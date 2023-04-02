@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FavoriteDetail extends StatefulWidget {
@@ -32,26 +33,31 @@ class _ProductItemListState extends State<ProductItemList> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(8.0),
-      child: Container(
-        child: Row(
-          children: [
-            SizedBox(
-              width: 100,
-              height: 100,
-              child: Image.asset('assets/images/ic_black_coffee.png', fit: BoxFit.fill,),
-            ),
-            SizedBox(width: 5,),
-            Expanded(child: SizedBox(
-              height: 100,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('product.title'),
-                  Expanded(child: Text('product.description', maxLines: 5, overflow: TextOverflow.ellipsis,),),
-                ],
+      child: GestureDetector(
+        onTap: (){
+          print(FirebaseAuth.instance.currentUser!);
+        },
+        child: Container(
+          child: Row(
+            children: [
+              SizedBox(
+                width: 100,
+                height: 100,
+                child: Image.asset('assets/images/ic_black_coffee.png', fit: BoxFit.fill,),
               ),
-            ),),
-          ],
+              SizedBox(width: 5,),
+              Expanded(child: SizedBox(
+                height: 100,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('product.title'),
+                    Expanded(child: Text('product.description', maxLines: 5, overflow: TextOverflow.ellipsis,),),
+                  ],
+                ),
+              ),),
+            ],
+          ),
         ),
       ),
     );
