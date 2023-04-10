@@ -57,7 +57,7 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   final name = TextEditingController();
-  final moblie = TextEditingController();
+  final mobile = TextEditingController();
   final address = TextEditingController();
 
   final email = TextEditingController();
@@ -73,7 +73,7 @@ class _SignUpFormState extends State<SignUpForm> {
     if(_formKey.currentState!.validate()){
       _formKey.currentState!.save();
       print('valid');
-      await authService.register(email.text, password.text, name.text, address.text, moblie.text).then((value) async {
+      await authService.register(email.text, password.text, name.text).then((value) async {
         if(value==true){
           showSnackBar(context, Colors.green, "Register successfully");
           Navigator.pop(context);
@@ -95,10 +95,6 @@ class _SignUpFormState extends State<SignUpForm> {
           children: [
             SizedBox(height: 30,),
             nameTextFormField(),
-            SizedBox(height: 30,),
-            addressTextFormField(),
-            SizedBox(height: 30,),
-            mobileTextFormField(),
             SizedBox(height: 30,),
             emailTextFormField(),
             SizedBox(height: 30,),
@@ -144,11 +140,11 @@ class _SignUpFormState extends State<SignUpForm> {
   }
   TextFormField mobileTextFormField() {
     return TextFormField(
-      controller: moblie,
+      controller: mobile,
       keyboardType: TextInputType.phone,
       decoration: InputDecoration(
         border: OutlineInputBorder(),
-        hintText: "Enter your moblie",
+        hintText: "Enter your mobile",
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: Icon(Icons.phone),
       ),
