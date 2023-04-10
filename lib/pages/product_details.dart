@@ -27,11 +27,12 @@ class _ProductDetailsState extends State<ProductDetails> {
         ),
       ),
       body: SafeArea(
-       child: SingleChildScrollView(
+       child: SizedBox(
+         height: MediaQuery.of(context).size.height,
          child: Padding(
            padding: const EdgeInsets.all(8.0),
            child: Column(
-             children: <Widget> [
+             children: [
                Image.network(widget.productData.image,
                  fit: BoxFit.fill,
                  width: size.width * 0.5 ,),
@@ -44,16 +45,18 @@ class _ProductDetailsState extends State<ProductDetails> {
                    ),
                  ),
                ),
-               Container(
-                 width: size.width,
-                 height: 150,
-                 // decoration: BoxDecoration(
-                 //     border: Border.all(color: Colors.blueAccent)
-                 // ),
-                 child: Text(widget.productData.description,
-                   overflow: TextOverflow.clip,
-                   style: TextStyle(
-                     fontSize: 16,
+               Expanded(
+                 child: Container(
+                   width: size.width,
+                   height: 150,
+                   // decoration: BoxDecoration(
+                   //     border: Border.all(color: Colors.blueAccent)
+                   // ),
+                   child: Text(widget.productData.description,
+                     overflow: TextOverflow.clip,
+                     style: TextStyle(
+                       fontSize: 16,
+                     ),
                    ),
                  ),
                ),

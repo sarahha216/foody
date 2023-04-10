@@ -47,7 +47,7 @@ class _ProductPopularState extends State<ProductPopular> {
                       ),
                       itemBuilder: (context, index){
                         var value = snapShot.data!.docs[index];
-                        ProductModel product = ProductModel(id: value['id'], title: value['title'], description: value['description'], image: value['image'], price: value['price'].toDouble());
+                        ProductModel product = ProductModel(id: value['id'], title: value['title'], description: value['description'], image: value['image'], price: value['price'].toDouble(), resKey: value['resKey']);
 
                         return _productItem(product);
                       });

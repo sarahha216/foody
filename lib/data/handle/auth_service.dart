@@ -67,7 +67,7 @@ class AuthService{
     await FirebaseFirestore.instance.collection('products')
         .doc(productid).get().then((value) async{
       var data = value.data();
-      product = ProductModel(id: data?['id'], title: data?['title'], description: data?['description'], image: data?['image'], price: data?['price'].toDouble());
+      product = ProductModel(id: data?['id'], title: data?['title'], description: data?['description'], image: data?['image'], price: data?['price'].toDouble(), resKey: data?['resKey']);
     });
     return product;
   }
