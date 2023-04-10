@@ -1,24 +1,38 @@
 class UserModel {
-  late String username;
-  late String password;
-  late String name;
-  late String address;
-  late String moblie;
+  String userID;
+  String email;
+  String password;
+  String name;
+  String? mobile;
+  String? address;
 
-  UserModel({required this.username, required this.password, required this.name, required this.address, required this.moblie});
+  UserModel({
+    required this.userID,
+    required this.email,
+    required this.password,
+    required this.name,
+    this.mobile,
+    this.address,
+  });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(username: json["username"], password: json["password"], name: json["name"],
-    address: json["address"], moblie: json["moblie"]);
+    return UserModel(
+        userID: json["userID"],
+        email: json["email"],
+        password: json["password"],
+        name: json["name"],
+        mobile: json["mobile"],
+        address: json["address"]);
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "username": username,
+      "userID": userID,
+      "email": email,
       "password": password,
       "name": name,
+      "mobile": mobile,
       "address": address,
-      "moblie": moblie,
     };
   }
 }

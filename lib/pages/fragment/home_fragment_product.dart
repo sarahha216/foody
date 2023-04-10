@@ -1,9 +1,8 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:foody/data/handle/auth_service.dart';
-import 'package:foody/data/models/product_model.dart';
+import 'package:foody/data/models/food.dart';
 import 'package:foody/pages/product_details.dart';
 import 'package:foody/widgets/navigator_widget.dart';
 import 'package:foody/widgets/title_cate.dart';
@@ -16,7 +15,10 @@ class ProductPopular extends StatefulWidget {
 }
 
 class _ProductPopularState extends State<ProductPopular> {
-  AuthService authService = AuthService();
+
+  late FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
+  late DatabaseReference databaseReference = firebaseDatabase.ref("foods");
+
   Future productFunc() async{
     print('product');
   }
@@ -30,15 +32,15 @@ class _ProductPopularState extends State<ProductPopular> {
           TitleCate.base(titleCate: "Popular Products",seeMore: productFunc,),
           SizedBox(height: 10,),
           Container(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('products').snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> snapShot){
+            child: FutureBuilder(
+              future: databaseReference.get(),
+              builder: (context, snapShot){
                 if(snapShot.hasData){
                   return GridView.builder(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       primary: false,
-                      itemCount: snapShot.data!.docs.length,
+                      itemCount: snapShot.data!.children.length,
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
                         mainAxisSpacing: 10,
@@ -46,10 +48,17 @@ class _ProductPopularState extends State<ProductPopular> {
                         childAspectRatio: 0.7,
                       ),
                       itemBuilder: (context, index){
-                        var value = snapShot.data!.docs[index];
-                        ProductModel product = ProductModel(id: value['id'], title: value['title'], description: value['description'], image: value['image'], price: value['price'].toDouble(), resKey: value['resKey']);
+                        var value = snapShot.data!.children.elementAt(index);
+                        Food food = Food(
+                            name: value.child("name").value.toString(),
+                            image: value.child("image").value.toString(),
+                            description: value.child("description").value.toString(),
+                            price: value.child("price").value as int,
+                            rate: value.child("rate").value as int,
+                            resKey: value.child("resKey").value.toString(),
+                            foodKey: value.child("foodKey").value.toString());
 
-                        return _productItem(product);
+                        return _productItem(food);
                       });
                 }
                 else{
@@ -62,13 +71,13 @@ class _ProductPopularState extends State<ProductPopular> {
       ),
     );
   }
-  _productItem(ProductModel productModel){
+  _productItem(Food food){
     double contentWidth = min(MediaQuery.of(context).size.width, 700);
     int count = contentWidth ~/ 100;
     double cardSize = (contentWidth - 8.0 * 2 - (count - 1) * 8.0) / count;
     return GestureDetector(
       onTap: (){
-        nextScreen(context, ProductDetails(productData: productModel,));
+        nextScreen(context, ProductDetails(food: food,));
       },
       child: Container(
         decoration: BoxDecoration(
@@ -80,14 +89,14 @@ class _ProductPopularState extends State<ProductPopular> {
             SizedBox(
               width: cardSize,
               height: cardSize,
-              child: Image.network(productModel.image,
+              child: Image.network(food.image,
                 fit: BoxFit.fill,
               ),
             ),
             Container(
               padding: EdgeInsets.only(left: 4),
               width: cardSize-4,
-              child: Text(productModel.title,
+              child: Text(food.name,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 16,
@@ -98,7 +107,7 @@ class _ProductPopularState extends State<ProductPopular> {
             Container(
               padding: EdgeInsets.only(left: 4),
               width: cardSize-4,
-              child: Text(productModel.price.toString() + " VND",
+              child: Text(food.price.toString() + " VND",
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: Colors.red,
@@ -111,62 +120,3 @@ class _ProductPopularState extends State<ProductPopular> {
     );
   }
 }
-
-// class ProductItem extends StatefulWidget {
-//   const ProductItem({Key? key}) : super(key: key);
-//
-//   @override
-//   State<ProductItem> createState() => _ProductItemState();
-// }
-//
-// class _ProductItemState extends State<ProductItem> {
-//   @override
-//   Widget build(BuildContext context) {
-//     double contentWidth = min(MediaQuery.of(context).size.width, 700);
-//     int count = contentWidth ~/ 100;
-//     double cardSize = (contentWidth - 8.0 * 2 - (count - 1) * 8.0) / count;
-//     return GestureDetector(
-//       onTap: (){},
-//       child: Container(
-//         decoration: BoxDecoration(
-//           border: Border.all(),
-//         ),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             SizedBox(
-//               width: cardSize,
-//               height: cardSize,
-//               child: Image.asset('assets/images/ic_banh_mi.png',
-//                 fit: BoxFit.fill,
-//               ),
-//             ),
-//             Container(
-//               padding: EdgeInsets.only(left: 4),
-//               width: cardSize-4,
-//               child: Text('Bánh mì bơ tỏi đặc biệt',
-//                 overflow: TextOverflow.ellipsis,
-//                 style: TextStyle(
-//                   fontSize: 16,
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               ),
-//             ),
-//             Container(
-//               padding: EdgeInsets.only(left: 4),
-//               width: cardSize-4,
-//               child: Text('18.000 VNĐ',
-//                 overflow: TextOverflow.ellipsis,
-//                 style: TextStyle(
-//                   color: Colors.red,
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:foody/data/models/product_model.dart';
+import 'package:foody/data/models/food.dart';
 import 'package:foody/widgets/button_continue_widget.dart';
+import 'package:foody/widgets/widgets.dart';
 
 class ProductDetails extends StatefulWidget {
-  final ProductModel productData;
-  const ProductDetails({Key? key, required this.productData}) : super(key: key);
+  final Food food;
+  const ProductDetails({Key? key, required this.food}) : super(key: key);
 
   @override
   State<ProductDetails> createState() => _ProductDetailsState();
@@ -33,29 +34,25 @@ class _ProductDetailsState extends State<ProductDetails> {
            padding: const EdgeInsets.all(8.0),
            child: Column(
              children: [
-               Image.network(widget.productData.image,
+               Image.network(widget.food.image,
                  fit: BoxFit.fill,
+                 height: 200,
                  width: size.width * 0.5 ,),
-               Container(
-                 child: Text(widget.productData.title,
-                   overflow: TextOverflow.ellipsis,
-                   style: TextStyle(
-                     fontSize: 24,
-                     fontWeight: FontWeight.bold,
-                   ),
-                 ),
+               SizedBox(height: 8,),
+               TextWidget.name(text: widget.food.name),
+               SizedBox(height: 8,),
+               TextWidget().price(
+                 text: widget.food.price.toString(),
                ),
+               SizedBox(height: 8,),
                Expanded(
                  child: Container(
                    width: size.width,
                    height: 150,
-                   // decoration: BoxDecoration(
-                   //     border: Border.all(color: Colors.blueAccent)
-                   // ),
-                   child: Text(widget.productData.description,
+                   child: Text(widget.food.description??"",
                      overflow: TextOverflow.clip,
                      style: TextStyle(
-                       fontSize: 16,
+                       fontSize: 18,
                      ),
                    ),
                  ),

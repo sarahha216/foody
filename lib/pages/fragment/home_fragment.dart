@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:foody/pages/fragment/home_fragment_categories.dart';
+import 'package:foody/pages/fragment/home_fragment_restaurant.dart';
 import 'package:foody/pages/fragment/home_fragment_product.dart';
 
 class HomeDetail extends StatefulWidget {

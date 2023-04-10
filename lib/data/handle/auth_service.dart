@@ -1,25 +1,23 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:foody/data/models/category_model.dart';
-import 'package:foody/data/models/product_model.dart';
-import 'package:foody/data/models/user_model.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class AuthService{
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
-  Future register(String email, String password, String name, String address, String moblie) async{
+  Future register(String email, String password, String name) async{
     try{
       User user = (await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password)).user!;
 
       if(user!=null){
         Map<String, dynamic> map ={
+          'userID': user.uid,
           'email': email,
           'password': password,
           'name': name,
-          'address': address,
-          'moblie': moblie,
+          'address': '',
+          'mobile': '',
         };
-        FirebaseFirestore.instance.collection('users').doc(user.uid).set(map);
+        FirebaseDatabase.instance.ref('uses').child(user.uid).set(map);
         return true;
       }
 
@@ -39,36 +37,5 @@ class AuthService{
     on FirebaseAuthException catch(e){
       return e.message;
     }
-  }
-
-  Future<Map<String, dynamic>?> getUserData() async{
-    Map<String, dynamic>? userData;
-    await FirebaseFirestore.instance.collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid).get().then((value) async{
-      userData = value.data();
-    });
-    return userData;
-  }
-
-  Future<CategoryModel?> getCateData(String cateid) async{
-    CategoryModel? cate;
-    await FirebaseFirestore.instance.collection('categories')
-        .doc(cateid).get().then((value) async{
-          // var data = value.data();
-          // cate = CategoryModel(id: data?['id'], title: data?['title'], image: data?['image']);
-          var data = value.data();
-          cate = CategoryModel.fromJson(data ?? {});
-    });
-    return cate;
-  }
-
-  Future<ProductModel?> getProductData(String productid) async{
-    ProductModel? product;
-    await FirebaseFirestore.instance.collection('products')
-        .doc(productid).get().then((value) async{
-      var data = value.data();
-      product = ProductModel(id: data?['id'], title: data?['title'], description: data?['description'], image: data?['image'], price: data?['price'].toDouble(), resKey: data?['resKey']);
-    });
-    return product;
   }
 }
