@@ -6,6 +6,7 @@ import 'package:foody/data/models/food.dart';
 import 'package:foody/pages/product_details.dart';
 import 'package:foody/widgets/navigator_widget.dart';
 import 'package:foody/widgets/title_cate.dart';
+import 'package:foody/widgets/widgets.dart';
 
 class ProductPopular extends StatefulWidget {
   const ProductPopular({Key? key}) : super(key: key);
@@ -107,12 +108,7 @@ class _ProductPopularState extends State<ProductPopular> {
             Container(
               padding: EdgeInsets.only(left: 4),
               width: cardSize-4,
-              child: Text(food.price.toString() + " VND",
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: Colors.red,
-                ),
-              ),
+              child: TextWidget().default_price(text: food.price.toString()),
             ),
           ],
         ),
