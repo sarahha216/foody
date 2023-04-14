@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:foody/data/db_helper.dart';
 import 'package:foody/data/models/food.dart';
+import 'package:foody/data/models/food_basket.dart';
+import 'package:foody/pages/cart_page.dart';
 import 'package:foody/widgets/button_continue_widget.dart';
+import 'package:foody/widgets/navigator_widget.dart';
 import 'package:foody/widgets/widgets.dart';
 
 class ProductDetails extends StatefulWidget {
@@ -12,6 +16,38 @@ class ProductDetails extends StatefulWidget {
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
+  late DBHelper dbHelper;
+  List<FoodBasket>? dataList;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    dbHelper = DBHelper();
+    loadData();
+    super.initState();
+  }
+  loadData() async{
+    dataList = await dbHelper.getFoodList();
+  }
+  Future<void> _addCart() async{
+      var food = widget.food;
+      await dbHelper.insertChat(
+          FoodBasket(
+              quantity: 1,
+              sum: food.price.toDouble(),
+              name: food.name,
+              image: food.image,
+              price: food.price,
+              rate: food.rate,
+              resKey: food.resKey,
+              foodKey: food.foodKey)
+      );
+      loadData();
+
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -59,7 +95,21 @@ class _ProductDetailsState extends State<ProductDetails> {
                ),
                Container(
                child: ContinueButtonWidget.base(label: 'Add to Cart', voidCallback: (){
-
+                 // var food = widget.food;
+                 // FoodBasket foodBasket = FoodBasket(
+                 //     quantity: 1,
+                 //     sum: 1,
+                 //     name: food.name,
+                 //     image: food.image,
+                 //     price: food.price,
+                 //     rate: food.rate,
+                 //     resKey: food.resKey,
+                 //     foodKey: food.foodKey);
+                 //
+                 // nextScreen(context, CartPage(foodBasket: foodBasket,));
+                 _addCart();
+                 print('ok');
+                 nextScreen(context, CartPage());
                }),
                ),
              ],
