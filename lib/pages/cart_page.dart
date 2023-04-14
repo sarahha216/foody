@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foody/data/db_helper.dart';
-import 'package:foody/data/models/food_basket.dart';
+import 'package:foody/data/models/cart.dart';
 import 'package:foody/widgets/widgets.dart';
 
 class CartPage extends StatefulWidget {
@@ -12,7 +12,7 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   late DBHelper dbHelper;
-  List<FoodBasket>? dataList;
+  List<Cart>? dataList;
 
   @override
   void initState() {
@@ -60,13 +60,13 @@ class _CartPageState extends State<CartPage> {
       height: MediaQuery.of(context).size.height,
       child: FutureBuilder(
         future: dbHelper.getFoodList(),
-        builder: (context, AsyncSnapshot<List<FoodBasket>> snapshot){
+        builder: (context, AsyncSnapshot<List<Cart>> snapshot){
           if(!snapshot.hasData||snapshot.data==null){
-            return Center(child: Text('No cart'),);
+            return Center(child: Text('No item'),);
           }
           else if(snapshot.data?.length==0) {
             return Center(
-              child: Text('No Cart'),
+              child: Text('No item'),
             );
           }
           else{
@@ -81,18 +81,18 @@ class _CartPageState extends State<CartPage> {
                             SizedBox(
                               width: 100,
                               height: 100,
-                              child: Image.network( snapshot.data![index].image),),
+                              child: Image.network( snapshot.data![index].foodImage),),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(snapshot.data![index].name,
+                                  Text(snapshot.data![index].foodName,
                                       style: TextStyle(
                                         fontSize: 16,
                                         overflow: TextStyle().overflow,
                                       )),
                                   SizedBox(height: 4,),
-                                  Text(snapshot.data![index].price.toString() + " VND",
+                                  Text(snapshot.data![index].foodPrice.toString() + " VND",
                                       style: const TextStyle(
                                           fontSize: 16)),
                                   // TextWidget()
@@ -108,7 +108,11 @@ class _CartPageState extends State<CartPage> {
                                   color: Colors.green,
                                   icon: const Icon(Icons.remove),
                                   onPressed: () {
-
+                                    setState(() {
+                                      if(snapshot.data![index].quantity > 1){
+                                        dbHelper.update(snapshot.data![index].id!, snapshot.data![index].quantity-1, snapshot.data![index].foodPrice.toDouble());
+                                      }
+                                    });
                                   },
                                 ),
                                 Text(
@@ -120,7 +124,11 @@ class _CartPageState extends State<CartPage> {
                                   splashRadius: 15,
                                   color: Colors.green,
                                   icon: const Icon(Icons.add),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    setState(() {
+                                      dbHelper.update(snapshot.data![index].id!, snapshot.data![index].quantity+1, snapshot.data![index].foodPrice.toDouble());
+                                    });
+                                  },
                                 ),
                                 IconButton(
                                   iconSize: 24,
@@ -128,7 +136,11 @@ class _CartPageState extends State<CartPage> {
                                   color: Colors.grey,
                                   icon: const Icon(Icons.delete_forever),
                                   onPressed: () {
-                                    //dbHelper!.delete(snapshot.data[index].)
+                                    setState(() {
+                                      dbHelper.delete(snapshot.data![index].id!);
+                                      loadData();
+                                      snapshot.data!.remove(snapshot.data![index].id!);
+                                    });
                                   },
                                 )
                               ],
