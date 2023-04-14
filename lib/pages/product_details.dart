@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foody/data/db_helper.dart';
 import 'package:foody/data/models/food.dart';
-import 'package:foody/data/models/food_basket.dart';
+import 'package:foody/data/models/cart.dart';
 import 'package:foody/pages/cart_page.dart';
 import 'package:foody/widgets/button_continue_widget.dart';
 import 'package:foody/widgets/navigator_widget.dart';
@@ -17,7 +17,7 @@ class ProductDetails extends StatefulWidget {
 
 class _ProductDetailsState extends State<ProductDetails> {
   late DBHelper dbHelper;
-  List<FoodBasket>? dataList;
+  List<Cart>? dataList;
   bool _isLoading = false;
 
   @override
@@ -32,13 +32,13 @@ class _ProductDetailsState extends State<ProductDetails> {
   Future<void> _addCart() async{
       var food = widget.food;
       await dbHelper.insertChat(
-          FoodBasket(
+          Cart(
               quantity: 1,
               sum: food.price.toDouble(),
-              name: food.name,
-              image: food.image,
-              price: food.price,
-              rate: food.rate,
+              foodName: food.name,
+              foodImage: food.image,
+              foodPrice: food.price,
+              foodRate: food.rate,
               resKey: food.resKey,
               foodKey: food.foodKey)
       );

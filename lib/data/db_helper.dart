@@ -1,4 +1,4 @@
-import 'package:foody/data/models/food_basket.dart';
+import 'package:foody/data/models/cart.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -24,22 +24,22 @@ class DBHelper{
 
   createDatabase(Database db, int version) async{
     await db.execute("CREATE TABLE cart(id INTEGER PRIMARY KEY AUTOINCREMENT,"
-        " name TEXT NOT NULL, image TEXT NOT NULL, "
-        " price INTEGER NOT NULL, rate INTEGER NOT NULL, "
+        " foodName TEXT NOT NULL, foodImage TEXT NOT NULL, "
+        " foodPrice INTEGER NOT NULL, foodRate INTEGER NOT NULL, "
         " resKey TEXT NOT NULL, foodKey TEXT NOT NULL,"
         " quantity INTEGER NOT NULL, sum REAL NOT NULL)");
   }
-  Future<FoodBasket> insertChat(FoodBasket foodBasket) async {
+  Future<Cart> insertChat(Cart cart) async {
     var dbCart = await database;
-    await dbCart!.insert('cart', foodBasket.toJson());
-    return foodBasket;
+    await dbCart!.insert('cart', cart.toJson());
+    return cart;
   }
 
-  Future<List<FoodBasket>> getFoodList() async{
+  Future<List<Cart>> getFoodList() async{
     await database;
     final List<Map<String, Object?>> QueryResult =
     await _database!.rawQuery("SELECT * FROM cart");
-    return QueryResult.map((e) => FoodBasket.fromJson(e)).toList();
+    return QueryResult.map((e) => Cart.fromJson(e)).toList();
   }
 
   Future<int> delete(int id) async{
@@ -49,5 +49,39 @@ class DBHelper{
         whereArgs: [id],
     );
   }
+
+  //cách 1
+  // Future<void> updateQuantity(int id, int quantity) async{
+  //   var dbCart = await database;
+  //   await dbCart!.rawUpdate(
+  //     'UPDATE cart set quantity = ? WHERE id = ?',
+  //     [quantity, id]
+  //   );
+  // }
+
+  //cách 2
+  Future<void> update(int id, int quantity, double price) async{
+    var dbCart = await database;
+    await dbCart!.update(
+      'cart',
+      {'quantity': quantity,
+        'sum': quantity * price,
+      },
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  //update toàn bộ
+  // Future<int> update(Cart cart) async{
+  //   var dbCart = await database;
+  //   return await dbCart!.update('cart',
+  //     cart.toJson(),
+  //     where: 'id = ?',
+  //     whereArgs: [cart.id],
+  //   );
+  // }
+
+
 
 }

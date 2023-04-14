@@ -1,49 +1,58 @@
-class Cart {
-  int id;
+class Cart{
+  int quantity;
+  double sum;
+  int? id;
   String foodKey;
   String foodName;
   int foodPrice;
   String foodImage;
   int foodRate;
   String resKey;
-  int quantity;
-  double sum;
   Cart({
-    required this.id,
-    required this.foodKey,
-    required this.foodName,
-    required this.foodPrice,
-    required this.foodImage,
-    required this.foodRate,
-    required this.resKey,
+    this.id,
+    required this.foodName, required this.foodImage, required this.foodPrice, required this.foodRate, required this.resKey, required this.foodKey,
     required this.quantity,
     required this.sum,
   });
+  void increase() {
+    quantity = (quantity+ 1);
+    sum = (foodPrice * quantity).toDouble();
+  }
+
+  void decrease() {
+    if (quantity> 0) {
+      quantity = (quantity- 1);
+      sum = (foodPrice * quantity).toDouble();
+    }
+  }
+
+  factory Cart.fromJson(Map<String, dynamic> json) {
+    return Cart(
+        id: json["id"],
+        foodName: json["foodName"],
+        foodImage: json["foodImage"],
+        foodPrice: json["foodPrice"],
+        foodRate: json["foodRate"],
+        resKey: json["resKey"],
+        foodKey: json["foodKey"],
+        quantity: json["quantity"],
+        sum: json["sum"],
+    );
+  }
+
   Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'id': id,
-      'foodKey': foodKey,
-      'foodName': foodName,
-      'foodPrice': foodPrice,
-      'foodImage': foodImage,
-      'foodRate': foodRate,
-      'resKey': resKey,
-      'quantity': quantity,
-      'sum': sum,
+    return {
+      "id": id,
+      "foodName": foodName,
+      "foodImage": foodImage,
+      "foodPrice": foodPrice,
+      "foodRate": foodRate,
+      "resKey": resKey,
+      "foodKey": foodKey,
+      "quantity": quantity,
+      "sum": sum,
     };
   }
 
-  factory Cart.fromMap(Map<String, dynamic> map) {
-    return Cart(
-      id: map['id'],
-      foodKey: map['foodKey'],
-      foodName: map['foodName'],
-      foodPrice: map['foodPrice'],
-      foodImage: map['foodImage'],
-      foodRate: map['foodRate'],
-      resKey: map['resKey'],
-      quantity: map['quantity'],
-      sum: map['sum'],
-    );
-  }
+
 }
