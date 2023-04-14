@@ -63,7 +63,6 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
           border: Border(
             bottom: BorderSide(width: 1.0, color: Colors.green),
           ),
-          color: Colors.white,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,53 +81,55 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
   }
   _menu(context, Size size){
     return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: FutureBuilder(
-        future: databaseReference.get(),
-        builder: (context, snapshot){
-          if(snapshot.hasData){
-            return ListView.builder(
-              shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
-              scrollDirection: Axis.vertical,
-                itemCount: snapshot.data!.children.length,
-                itemBuilder: (context, index){
-                  var value = snapshot.data!.children.elementAt(index);
-                  Food food = Food(
-                      name: value.child("name").value.toString(),
-                      image: value.child("image").value.toString(),
-                      description: value.child("description").value.toString(),
-                      price: value.child("price").value as int,
-                      rate: value.child("rate").value as int,
-                      resKey: value.child("resKey").value.toString(),
-                      foodKey: value.child("foodKey").value.toString());
-                  return GestureDetector(
-                    onTap: (){
-                      nextScreen(context, ProductDetails(food: food));
-                    },
-                    child: Container(
-                      color: Colors.grey.shade200,
-                      child: Row(
-                        children: [
-                          Container(
-                              width: 100,
-                              height: 100,
-                              child: Image.network(food.image, fit: BoxFit.fill,)),
-                          SizedBox(width: 8,),
-                          Expanded(child: Text(food.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),)),
-                          TextWidget().default_price(text: food.price.toString(), fontSize: 18),
-                        ],
+      child: FutureBuilder(
+      future: databaseReference.get(),
+      builder: (context, snapshot){
+        if(snapshot.hasData){
+          return ListView.builder(
+            shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+            scrollDirection: Axis.vertical,
+              itemCount: snapshot.data!.children.length,
+              itemBuilder: (context, index){
+                var value = snapshot.data!.children.elementAt(index);
+                Food food = Food(
+                    name: value.child("name").value.toString(),
+                    image: value.child("image").value.toString(),
+                    description: value.child("description").value.toString(),
+                    price: value.child("price").value as int,
+                    rate: value.child("rate").value as int,
+                    resKey: value.child("resKey").value.toString(),
+                    foodKey: value.child("foodKey").value.toString());
+                return GestureDetector(
+                  onTap: (){
+                    nextScreen(context, ProductDetails(food: food));
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(width: 1.0, color: Colors.grey),
                       ),
                     ),
-                  );
-                });
-          }
-          else{
-            return Text('');
-          }
-        }),
-      ),
+                    child: Row(
+                      children: [
+                        Container(
+                            width: 100,
+                            height: 100,
+                            child: Image.network(food.image, fit: BoxFit.fill,)),
+                        SizedBox(width: 8,),
+                        Expanded(child: Text(food.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),)),
+                        TextWidget().default_price(text: food.price.toString(), fontSize: 18),
+                      ],
+                    ),
+                  ),
+                );
+              });
+        }
+        else{
+          return Text('');
+        }
+      }),
     );
   }
 }

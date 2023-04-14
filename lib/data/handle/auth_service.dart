@@ -17,7 +17,7 @@ class AuthService{
           'address': '',
           'mobile': '',
         };
-        FirebaseDatabase.instance.ref('uses').child(user.uid).set(map);
+        FirebaseDatabase.instance.ref('users').child(user.uid).set(map);
         return true;
       }
 

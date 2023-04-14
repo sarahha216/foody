@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:foody/pages/cart_page.dart';
+import 'package:foody/widgets/navigator_widget.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({Key? key}) : super(key: key);
@@ -16,7 +18,9 @@ class HomeHeader extends StatelessWidget {
           ),
         ),),
         GestureDetector(
-          onTap: (){},
+          onTap: (){
+            nextScreen(context, CartPage());
+          },
           child: Container(
             height: 40,
             width: 40,
