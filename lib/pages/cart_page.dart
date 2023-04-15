@@ -1,29 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:foody/data/db_helper.dart';
 import 'package:foody/data/models/cart.dart';
+import 'package:foody/data/models/food.dart';
 import 'package:foody/widgets/widgets.dart';
 
 class CartPage extends StatefulWidget {
-  const CartPage({Key? key}) : super(key: key);
+  final Cart? cart;
+  final Food? food;
+  const CartPage({Key? key, this.cart, this.food}) : super(key: key);
 
   @override
   State<CartPage> createState() => _CartPageState();
 }
 
 class _CartPageState extends State<CartPage> {
-  late DBHelper dbHelper;
-  List<Cart>? dataList;
-
-  @override
-  void initState() {
-    dbHelper = DBHelper();
-    loadData();
-    super.initState();
-  }
-  loadData() async{
-    dataList = await dbHelper.getFoodList();
-  }
-
+  FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
+  late DatabaseReference databaseReference = firebaseDatabase.ref('carts');
+  String uid = FirebaseAuth.instance.currentUser!.uid;
+  late Cart cart;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -37,8 +32,8 @@ class _CartPageState extends State<CartPage> {
           child: Column(
             children: [
               _cart(),
-              SizedBox(height: 8,),
-              _total(),
+              // SizedBox(height: 8,),
+              // _total(),
             ],
           ),
         ),
@@ -59,23 +54,24 @@ class _CartPageState extends State<CartPage> {
   }
   _cart(){
     return FutureBuilder(
-      future: dbHelper.getFoodList(),
-      builder: (context, AsyncSnapshot<List<Cart>> snapshot){
+      future: databaseReference.get(),
+      builder: (context, snapshot){
         if(!snapshot.hasData||snapshot.data==null){
-          return Center(child: Text('No item'),);
-        }
-        else if(snapshot.data?.length==0) {
-          return Center(
-            child: Text('No item'),
-          );
+          return Center(child: Text(''),);
         }
         else{
+          cart = Cart.fromMap(snapshot.data!.child(uid).value as Map);
           return ListView.builder(
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
-              itemCount: snapshot.data!.length,
+              itemCount: snapshot.data!
+                  .child(uid)
+                  .child('cartItems')
+                  .children
+                  .length,
               itemBuilder: (context, index){
+                var c = cart.cartItems!.elementAt(index);
                 return SizedBox(
                   child: Column(
                     children: [
@@ -84,18 +80,18 @@ class _CartPageState extends State<CartPage> {
                           SizedBox(
                             width: 100,
                             height: 100,
-                            child: Image.network( snapshot.data![index].foodImage),),
+                            child: Image.network( c.food.image),),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(snapshot.data![index].foodName,
+                                Text(c.food.name,
                                     style: TextStyle(
                                       fontSize: 16,
                                       overflow: TextStyle().overflow,
                                     )),
                                 SizedBox(height: 4,),
-                                Text(snapshot.data![index].foodPrice.toString() + " VND",
+                                Text(c.food.price.toString()+ " VND",
                                     style: const TextStyle(
                                         fontSize: 16)),
                               ],
@@ -110,15 +106,20 @@ class _CartPageState extends State<CartPage> {
                                 icon: const Icon(Icons.remove),
                                 onPressed: () {
                                   setState(() {
-                                    if(snapshot.data![index].quantity > 1){
-                                      dbHelper.update(snapshot.data![index].id!, snapshot.data![index].quantity-1, snapshot.data![index].foodPrice.toDouble());
-                                    }
+                                    // if(snapshot.data![index].quantity > 1){
+                                    //   dbHelper.update(snapshot.data![index].id!, snapshot.data![index].quantity-1, snapshot.data![index].foodPrice.toDouble());
+                                    // }
                                   });
                                 },
                               ),
-                              Text(
-                                snapshot.data![index].quantity.toString(),
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              Container(
+                                width: 30,
+                                child: Center(
+                                  child: Text(
+                                    c.quantity.toString(),
+                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
                               ),
                               IconButton(
                                 iconSize: 24,
@@ -127,7 +128,7 @@ class _CartPageState extends State<CartPage> {
                                 icon: const Icon(Icons.add),
                                 onPressed: () {
                                   setState(() {
-                                    dbHelper.update(snapshot.data![index].id!, snapshot.data![index].quantity+1, snapshot.data![index].foodPrice.toDouble());
+                                    //dbHelper.update(snapshot.data![index].id!, snapshot.data![index].quantity+1, snapshot.data![index].foodPrice.toDouble());
                                   });
                                 },
                               ),
@@ -137,11 +138,11 @@ class _CartPageState extends State<CartPage> {
                                 color: Colors.grey,
                                 icon: const Icon(Icons.delete_forever),
                                 onPressed: () {
-                                  setState(() {
-                                    dbHelper.delete(snapshot.data![index].id!);
-                                    loadData();
-                                    snapshot.data!.remove(snapshot.data![index].id!);
-                                  });
+                                  // setState(() {
+                                  //   dbHelper.delete(snapshot.data![index].id!);
+                                  //   loadData();
+                                  //   snapshot.data!.remove(snapshot.data![index].id!);
+                                  // });
                                 },
                               )
                             ],
@@ -159,108 +160,3 @@ class _CartPageState extends State<CartPage> {
   }
 }
 
-
-// class CartPage extends StatelessWidget {
-//   const CartPage({Key? key,}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Cart Details"),
-//         centerTitle: true,
-//       ),
-//       body: SafeArea(
-//         child: SingleChildScrollView(
-//           child: Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: Column(
-//               children: [
-//                 _info(),
-//                 SizedBox(height: 8,),
-//                 _cart(),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//   _info(){
-//     return SizedBox(
-//       width: double.infinity,
-//       child: Text("Name: ", style: TextStyle(fontSize: 20, color: Colors.green, fontWeight: FontWeight.bold),),
-//     );
-//   }
-//   _cart(){
-//     return Container(
-//       margin: const EdgeInsets.symmetric(vertical: 4.0),
-//       child: Column(
-//         children: [
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             children: [
-//               Row(
-//                 children: [
-//                   SizedBox(
-//                       width: 100,
-//                       height: 100,
-//                       child: Image.asset("assets/images/dish.png"),),
-//                   SizedBox(width: 4,),
-//                   Column(
-//                     children: [
-//                       Text('foodBasket!.name',
-//                           style: TextStyle(
-//                               fontSize: 16,
-//                               overflow: TextStyle().overflow,
-//                           )),
-//                       Text('foodBasket!.name',
-//                           style: const TextStyle(
-//                               fontSize: 16)),
-//                       // TextWidget()
-//                       //     .priceBasket(text: 'foodBasket!.price.toString()'),
-//                     ],
-//                   ),
-//                 ],
-//               ),
-//               Row(
-//                 children: [
-//                   // Text(
-//                   //   "1",
-//                   //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-//                   // ),
-//                   // SizedBox(width: 14,),
-                  // IconButton(
-                  //   iconSize: 24,
-                  //   splashRadius: 15,
-                  //   color: Colors.grey,
-                  //   icon: const Icon(Icons.delete_forever),
-                  //   onPressed: () {},
-                  // )
-//                   IconButton(
-//                     iconSize: 24,
-//                     splashRadius: 15,
-//                     color: Colors.green,
-//                     icon: const Icon(Icons.remove),
-//                     onPressed: () {},
-//                   ),
-//                   Text(
-//                     "1",
-//                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-//                   ),
-//                   IconButton(
-//                     iconSize: 24,
-//                     splashRadius: 15,
-//                     color: Colors.green,
-//                     icon: const Icon(Icons.add),
-//                     onPressed: () {},
-//                   )
-//                 ],
-//               )
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }

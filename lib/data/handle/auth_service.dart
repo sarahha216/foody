@@ -18,6 +18,15 @@ class AuthService{
           'mobile': '',
         };
         FirebaseDatabase.instance.ref('users').child(user.uid).set(map);
+        Map<String, dynamic> mapCart = {
+          'totalQuantity': 0,
+          'totalPrice': 0,
+          'userID': user.uid,
+        };
+        await FirebaseDatabase.instance
+            .ref('carts')
+            .child(mapCart['userID'])
+            .set(mapCart);
         return true;
       }
 
