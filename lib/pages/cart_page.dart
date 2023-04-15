@@ -26,22 +26,20 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
+        appBar: AppBar(
         title: Text("Cart Details"),
         centerTitle: true,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                // _info(),
-                // SizedBox(height: 8,),
-                _cart(),
-              ],
-            ),
+          child: Column(
+            children: [
+              _cart(),
+              SizedBox(height: 8,),
+              _total(),
+            ],
           ),
         ),
       ),
@@ -54,108 +52,109 @@ class _CartPageState extends State<CartPage> {
       child: Text("Name: ", style: TextStyle(fontSize: 20, color: Colors.green, fontWeight: FontWeight.bold),),
     );
   }
-  _cart(){
+  _total(){
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: FutureBuilder(
-        future: dbHelper.getFoodList(),
-        builder: (context, AsyncSnapshot<List<Cart>> snapshot){
-          if(!snapshot.hasData||snapshot.data==null){
-            return Center(child: Text('No item'),);
-          }
-          else if(snapshot.data?.length==0) {
-            return Center(
-              child: Text('No item'),
-            );
-          }
-          else{
-            return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index){
-                  return SizedBox(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 100,
-                              height: 100,
-                              child: Image.network( snapshot.data![index].foodImage),),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(snapshot.data![index].foodName,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        overflow: TextStyle().overflow,
-                                      )),
-                                  SizedBox(height: 4,),
-                                  Text(snapshot.data![index].foodPrice.toString() + " VND",
-                                      style: const TextStyle(
-                                          fontSize: 16)),
-                                  // TextWidget()
-                                  //     .priceBasket(text: 'foodBasket!.price.toString()'),
-                                ],
-                              ),
-                            ),
-                            Row(
+        child: Text("Tổng cộng:" ),
+    );
+  }
+  _cart(){
+    return FutureBuilder(
+      future: dbHelper.getFoodList(),
+      builder: (context, AsyncSnapshot<List<Cart>> snapshot){
+        if(!snapshot.hasData||snapshot.data==null){
+          return Center(child: Text('No item'),);
+        }
+        else if(snapshot.data?.length==0) {
+          return Center(
+            child: Text('No item'),
+          );
+        }
+        else{
+          return ListView.builder(
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index){
+                return SizedBox(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: Image.network( snapshot.data![index].foodImage),),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                IconButton(
-                                  iconSize: 24,
-                                  splashRadius: 15,
-                                  color: Colors.green,
-                                  icon: const Icon(Icons.remove),
-                                  onPressed: () {
-                                    setState(() {
-                                      if(snapshot.data![index].quantity > 1){
-                                        dbHelper.update(snapshot.data![index].id!, snapshot.data![index].quantity-1, snapshot.data![index].foodPrice.toDouble());
-                                      }
-                                    });
-                                  },
-                                ),
-                                Text(
-                                  snapshot.data![index].quantity.toString(),
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                ),
-                                IconButton(
-                                  iconSize: 24,
-                                  splashRadius: 15,
-                                  color: Colors.green,
-                                  icon: const Icon(Icons.add),
-                                  onPressed: () {
-                                    setState(() {
-                                      dbHelper.update(snapshot.data![index].id!, snapshot.data![index].quantity+1, snapshot.data![index].foodPrice.toDouble());
-                                    });
-                                  },
-                                ),
-                                IconButton(
-                                  iconSize: 24,
-                                  splashRadius: 15,
-                                  color: Colors.grey,
-                                  icon: const Icon(Icons.delete_forever),
-                                  onPressed: () {
-                                    setState(() {
-                                      dbHelper.delete(snapshot.data![index].id!);
-                                      loadData();
-                                      snapshot.data!.remove(snapshot.data![index].id!);
-                                    });
-                                  },
-                                )
+                                Text(snapshot.data![index].foodName,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      overflow: TextStyle().overflow,
+                                    )),
+                                SizedBox(height: 4,),
+                                Text(snapshot.data![index].foodPrice.toString() + " VND",
+                                    style: const TextStyle(
+                                        fontSize: 16)),
                               ],
-                            )
-                          ],
-                        ),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                iconSize: 24,
+                                splashRadius: 15,
+                                color: Colors.green,
+                                icon: const Icon(Icons.remove),
+                                onPressed: () {
+                                  setState(() {
+                                    if(snapshot.data![index].quantity > 1){
+                                      dbHelper.update(snapshot.data![index].id!, snapshot.data![index].quantity-1, snapshot.data![index].foodPrice.toDouble());
+                                    }
+                                  });
+                                },
+                              ),
+                              Text(
+                                snapshot.data![index].quantity.toString(),
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              IconButton(
+                                iconSize: 24,
+                                splashRadius: 15,
+                                color: Colors.green,
+                                icon: const Icon(Icons.add),
+                                onPressed: () {
+                                  setState(() {
+                                    dbHelper.update(snapshot.data![index].id!, snapshot.data![index].quantity+1, snapshot.data![index].foodPrice.toDouble());
+                                  });
+                                },
+                              ),
+                              IconButton(
+                                iconSize: 24,
+                                splashRadius: 15,
+                                color: Colors.grey,
+                                icon: const Icon(Icons.delete_forever),
+                                onPressed: () {
+                                  setState(() {
+                                    dbHelper.delete(snapshot.data![index].id!);
+                                    loadData();
+                                    snapshot.data!.remove(snapshot.data![index].id!);
+                                  });
+                                },
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                );
 
-                      ],
-                    ),
-                  );
-
-            });
-          }
-        },
-      ),
+          });
+        }
+      },
     );
   }
 }
