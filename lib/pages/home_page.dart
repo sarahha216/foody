@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foody/pages/fragment/account_detail.dart';
 import 'package:foody/pages/fragment/favorite_fragment.dart';
 import 'package:foody/pages/fragment/home_fragment.dart';
-import 'package:foody/pages/fragment/notification_fragment.dart';
+import 'package:foody/pages/fragment/order_fragment.dart';
 
 import 'header/home_header.dart';
 import 'header/menu_header.dart';
@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
     List<Widget> screen = [
       HomeDetail(),
       FavoriteDetail(),
-      NotificationDetail(),
+      OrderFragment(),
       AccountDetail(),
     ];
     return Scaffold(
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home),label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.favorite),label: "Favorite"),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications),label: "Notifications"),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_basket),label: "Orders"),
           BottomNavigationBarItem(icon: Icon(Icons.account_circle),label: "Account"),
         ],
       ),
@@ -60,6 +60,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+
     );
   }
 }
