@@ -69,16 +69,19 @@ class _AddToCartPageState extends State<AddToCartPage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.cartItem!.food.name,
-                        style: TextStyle(
-                          fontSize: 16,
-                          overflow: TextStyle().overflow,
-                        )),
+                    Container(
+                      width: 150,
+                      child: Text(widget.cartItem.food.name,
+                          style: TextStyle(
+                            fontSize: 16,
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                    ),
                     SizedBox(
                       height: 4,
                     ),
                     TextWidget().default_price(
-                        text: widget.cartItem!.food.price.toString(),
+                        text: widget.cartItem.food.price.toString(),
                         fontSize: 16),
                   ],
                 ),
@@ -133,7 +136,7 @@ class _AddToCartPageState extends State<AddToCartPage> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               Text(
-                "${formater.format(int.parse("${widget.cartItem!.food.price * quantity}"))} VND",
+                "${formater.format(int.parse("${widget.cartItem.food.price * quantity}"))} VND",
                 style: TextStyle(color: Colors.red, fontSize: 18),
               ),
             ],
