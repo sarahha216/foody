@@ -1,15 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-class AuthService{
+class AuthService {
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
-  Future register(String email, String password, String name) async{
-    try{
-      User user = (await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password)).user!;
+  Future register(String email, String password, String name) async {
+    try {
+      User user = (await firebaseAuth.createUserWithEmailAndPassword(
+              email: email, password: password))
+          .user!;
 
-      if(user!=null){
-        Map<String, dynamic> map ={
+      if (user != null) {
+        Map<String, dynamic> map = {
           'userID': user.uid,
           'email': email,
           'password': password,
@@ -18,32 +20,23 @@ class AuthService{
           'mobile': '',
         };
         FirebaseDatabase.instance.ref('users').child(user.uid).set(map);
-        Map<String, dynamic> mapCart = {
-          'totalQuantity': 0,
-          'totalPrice': 0,
-          'userID': user.uid,
-        };
-        await FirebaseDatabase.instance
-            .ref('carts')
-            .child(mapCart['userID'])
-            .set(mapCart);
         return true;
       }
-
-    } on FirebaseAuthException catch(e){
+    } on FirebaseAuthException catch (e) {
       return e.message;
     }
   }
 
-  Future login(String email, String password) async{
-    try{
-      User user = (await firebaseAuth.signInWithEmailAndPassword(email: email, password: password)).user!;
+  Future login(String email, String password) async {
+    try {
+      User user = (await firebaseAuth.signInWithEmailAndPassword(
+              email: email, password: password))
+          .user!;
 
-      if(user!=null){
+      if (user != null) {
         return true;
       }
-    }
-    on FirebaseAuthException catch(e){
+    } on FirebaseAuthException catch (e) {
       return e.message;
     }
   }
