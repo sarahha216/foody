@@ -1,3 +1,5 @@
+import 'package:foody/data/models/cart_item.dart';
+
 class UserModel {
   String userID;
   String email;
@@ -5,15 +7,16 @@ class UserModel {
   String name;
   String? mobile;
   String? address;
+  List<CartItem>? cart;
 
-  UserModel({
-    required this.userID,
-    required this.email,
-    required this.password,
-    required this.name,
-    this.mobile,
-    this.address,
-  });
+  UserModel(
+      {required this.userID,
+      required this.email,
+      required this.password,
+      required this.name,
+      this.mobile,
+      this.address,
+      this.cart});
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -23,7 +26,9 @@ class UserModel {
         name: json["name"],
         mobile: json["mobile"],
         address: json["address"],
-    );
+        cart: json["cart"] != null
+            ? (json["cart"] as List).map((e) => CartItem.fromMap(e)).toList()
+            : []);
   }
 
   Map<String, dynamic> toJson() {
@@ -34,6 +39,7 @@ class UserModel {
       "name": name,
       "mobile": mobile,
       "address": address,
+      "cart": cart?.map((e) => e.toMap())
     };
   }
 }
