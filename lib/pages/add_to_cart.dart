@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:foody/data/models/cart_item.dart';
+import 'package:foody/pages/cart_page.dart';
+import 'package:foody/widgets/navigator_widget.dart';
 import 'package:foody/widgets/widgets.dart';
 import 'package:intl/intl.dart';
 
@@ -74,6 +76,7 @@ class _AddToCartPageState extends State<AddToCartPage> {
                       child: Text(widget.cartItem.food.name,
                           style: TextStyle(
                             fontSize: 16,
+                            fontWeight: FontWeight.bold,
                             overflow: TextOverflow.ellipsis,
                           )),
                     ),
@@ -152,6 +155,7 @@ class _AddToCartPageState extends State<AddToCartPage> {
                   child: ElevatedButton(
                       onPressed: () {
                         _addOrUpdate();
+                        nextScreen(context, CartPage());
                       },
                       child: Text('Add', style: const TextStyle(fontSize: 16))),
                 ),
