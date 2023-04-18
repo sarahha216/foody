@@ -26,19 +26,38 @@ class _CartPageState extends State<CartPage> {
     DataSnapshot snap = await databaseReference.child(uid).child('cart').get();
     if (snap.value != null) {
       Map data = snap.value as Map;
-      // sum = data.entries
-      //     .where((e) => e.value('sum'))
+      // var a = data.entries
+      //     .where((e) => e.key.startsWith('price'))
       //     .map<int>((e) => e.value('sum'))
       //     .reduce((a, b) => a + b);
 
-      data.entries.forEach((element) {
-        setState(() {
-          sum += element.value['sum'] as int;
-        });
+      //cach 1
+      // data.entries.forEach((element) {
+      //   setState(() {
+      //     sum += element.value['sum'] as int;
+      //   });
+      // });
+
+      //cach 2
+      // data.entries.forEach((element) {
+      //   setState(() {
+      //     sum = (element.value['quantity'] * element.value['food']['price']
+      //         as int);
+      //   });
+      // });
+
+      setState(() {
+        sum = data.entries
+            .map((e) => e.value['quantity'] * e.value['food']['price'])
+            .reduce((a, b) => (a + b));
       });
+
       print(sum);
+    } else {
+      setState(() {
+        sum = 0;
+      });
     }
-    //${state.carts.map((e) => e.quantity * e.product.price).reduce((a, b) => a + b)};
   }
 
   @override
@@ -152,13 +171,62 @@ class _CartPageState extends State<CartPage> {
                               IconButton(
                                 iconSize: 24,
                                 splashRadius: 15,
+                                color: Colors.green,
+                                icon: const Icon(Icons.remove),
+                                onPressed: () async {
+                                  if (cartItem.quantity > 1) {
+                                    await databaseReference
+                                        .child(uid)
+                                        .child('cart')
+                                        .child(cartItem.food.foodKey)
+                                        .update({
+                                      'quantity': cartItem.quantity - 1,
+                                      'sum': (cartItem.quantity - 1) *
+                                          cartItem.food.price,
+                                    });
+                                    setState(() {
+                                      loadData();
+                                    });
+                                  }
+                                },
+                              ),
+                              Container(
+                                width: 30,
+                                child: Center(
+                                  child: Text(
+                                    '${cartItem.quantity}',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                iconSize: 24,
+                                splashRadius: 15,
+                                color: Colors.green,
+                                icon: const Icon(Icons.add),
+                                onPressed: () async {
+                                  await databaseReference
+                                      .child(uid)
+                                      .child('cart')
+                                      .child(cartItem.food.foodKey)
+                                      .update({
+                                    'quantity': cartItem.quantity + 1,
+                                    'sum': (cartItem.quantity + 1) *
+                                        cartItem.food.price,
+                                  });
+                                  setState(() {
+                                    loadData();
+                                  });
+                                },
+                              ),
+                              IconButton(
+                                iconSize: 24,
+                                splashRadius: 15,
                                 color: Colors.grey,
                                 icon: const Icon(Icons.delete_forever),
                                 onPressed: () {
-                                  // await cartItem
-                                  //     .toMap()
-                                  //     .remove(cartItem.food.foodKey);
-
                                   setState(() {
                                     databaseReference
                                         .child(uid)
