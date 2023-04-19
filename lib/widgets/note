@@ -1,0 +1,19 @@
+// var a = data.entries
+//     .where((e) => e.key.startsWith('price'))
+//     .map<int>((e) => e.value('sum'))
+//     .reduce((a, b) => a + b);
+
+//cach 1
+// data.entries.forEach((element) {
+//   setState(() {
+//     sum += element.value['sum'] as int;
+//   });
+// });
+
+//cach 2
+// data.entries.forEach((element) {
+//   setState(() {
+//     sum = (element.value['quantity'] * element.value['food']['price']
+//         as int);
+//   });
+// });
