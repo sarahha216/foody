@@ -45,41 +45,47 @@ class _CartPageState extends State<CartPage> {
   }
 
   checkOut() async {
-    //print(data);
-    var tempDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
-    //print(tempDate);
-    var tempID = generateRandomString();
-    var tempQuantity = data?.entries
-        .map((e) => e.value['quantity'])
-        .reduce((a, b) => (a + b));
-    //print(tempQuantity);
+    DataSnapshot snap = await databaseReference.child(uid).child('cart').get();
+    if (snap.value != null) {
+      //print(data);
+      var tempDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+      //print(tempDate);
+      var tempID = generateRandomString();
+      var tempQuantity = data?.entries
+          .map((e) => e.value['quantity'])
+          .reduce((a, b) => (a + b));
+      //print(tempQuantity);
 
-    await firebaseDatabase.ref('orders').child(tempID).set({
-      'orderID': tempID,
-      'oderDate': tempDate,
-      'orderSum': sum,
-      'orderQuantity': tempQuantity,
-      'userID': uid,
-      'orderFood': data,
-    });
-    await databaseReference
-        .child(uid)
-        .child('cart')
-        .remove();
-    setState(() {
-      loadData();
-    });
+      await firebaseDatabase.ref('orders').child(uid).child(tempID).set({
+        'orderID': tempID,
+        'oderDate': tempDate,
+        'orderSum': sum,
+        'orderQuantity': tempQuantity,
+        'userID': uid,
+        'orderFood': data,
+      });
+      await databaseReference.child(uid).child('cart').remove();
+      setState(() {
+        loadData();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery
-        .of(context)
-        .size;
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text("Cart"),
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+            // Navigator.push(context,
+            //     MaterialPageRoute(builder: (context) => HomeDetail())).then();
+          },
+        ),
       ),
       body: Stack(
         children: [
@@ -103,34 +109,33 @@ class _CartPageState extends State<CartPage> {
         children: [
           Expanded(
               child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.green)),
-                height: 48,
-                child: Text("Total: $sum",
-                    style: const TextStyle(
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0)),
-              )),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                color: Colors.white, border: Border.all(color: Colors.green)),
+            height: 48,
+            child: Text("Total: $sum",
+                style: const TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0)),
+          )),
           Expanded(
               child: Container(
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: () {
-                    checkOut();
-                  },
-                  child: Text('Check out'),
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        //borderRadius: BorderRadius.circular(16),
+            height: 48,
+            child: ElevatedButton(
+              onPressed: () {
+                checkOut();
+              },
+              child: Text('Check out'),
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                      //borderRadius: BorderRadius.circular(16),
                       ),
-                    ),
-                  ),
                 ),
-              )),
+              ),
+            ),
+          )),
         ],
       ),
     );
@@ -152,10 +157,7 @@ class _CartPageState extends State<CartPage> {
               itemCount: snapshot.data!.children.length,
               itemBuilder: (context, index) {
                 CartItem cartItem = CartItem.fromMap(
-                    snapshot.data!
-                        .children
-                        .elementAt(index)
-                        .value as Map);
+                    snapshot.data!.children.elementAt(index).value as Map);
                 print(cartItem);
                 return SizedBox(
                   child: Column(
