@@ -3,17 +3,16 @@
 //     .map<int>((e) => e.value('sum'))
 //     .reduce((a, b) => a + b);
 
-//cach 1
-// data.entries.forEach((element) {
-//   setState(() {
-//     sum += element.value['sum'] as int;
-//   });
-// });
-
-//cach 2
+//duyet map
 // data.entries.forEach((element) {
 //   setState(() {
 //     sum = (element.value['quantity'] * element.value['food']['price']
 //         as int);
 //   });
 // });
+
+//Update UI after removing items from List
+//https://stackoverflow.com/questions/51931017/update-ui-after-removing-items-from-list
+
+//Usage of FutureBuilder with setState
+//https://stackoverflow.com/questions/52021205/usage-of-futurebuilder-with-setstate
