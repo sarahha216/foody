@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:foody/data/handle/function.dart';
+import 'package:foody/data/handle/database_service.dart';
 import 'package:foody/pages/cart_page.dart';
 import 'package:foody/pages/fragment/home_fragment_product.dart';
 import 'package:foody/pages/fragment/home_fragment_restaurant.dart';
@@ -13,7 +13,7 @@ class HomeDetail extends StatefulWidget {
 }
 
 class _HomeDetailState extends State<HomeDetail> {
-  MyFunction myFunction = MyFunction();
+  DatabaseService myFunction = DatabaseService();
   int quantity = 0;
 
   @override
@@ -23,7 +23,7 @@ class _HomeDetailState extends State<HomeDetail> {
   }
 
   loadCount() async {
-    quantity = await myFunction.loadData();
+    quantity = await myFunction.loadCounter();
     setState(() {});
     print(quantity);
   }
