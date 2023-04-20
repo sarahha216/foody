@@ -29,38 +29,41 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: flag?HomeHeader():MenuHeader(),
+        title: flag ? HomeHeader() : MenuHeader(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: selectIndex,
-        onTap: (index){
+        onTap: (index) {
           setState(() {
             selectIndex = index;
-            if(selectIndex!=3){
-              flag=true;
-            }
-            else{
-              flag=false;
+            if (selectIndex != 3) {
+              flag = true;
+            } else {
+              flag = false;
             }
           });
         },
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home),label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite),label: "Favorite"),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_basket),label: "Orders"),
-          BottomNavigationBarItem(icon: Icon(Icons.account_circle),label: "Account"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.favorite), label: "Favorite"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_basket), label: "Orders"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.account_circle), label: "Account"),
         ],
       ),
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             screen[selectIndex]
           ],
         ),
       ),
-
     );
   }
 }

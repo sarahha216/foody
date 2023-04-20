@@ -7,7 +7,7 @@ class Order {
   int orderQuantity;
   String userID;
 
-  List<CartItem>? orderFood;
+  CartItem orderFood;
 
   Order(
       {required this.orderID,
@@ -15,7 +15,7 @@ class Order {
       required this.orderSum,
       required this.orderQuantity,
       required this.userID,
-      this.orderFood});
+      required this.orderFood});
 
   factory Order.fromJson(Map map) {
     return Order(
@@ -24,21 +24,17 @@ class Order {
         orderSum: map["orderSum"] as int,
         orderQuantity: map["orderQuantity"] as int,
         userID: map["userID"],
-        orderFood: map["orderFood"] != null
-            ? (map["orderFood"] as List)
-                .map((e) => CartItem.fromMap(e))
-                .toList()
-            : []);
+        orderFood: CartItem.fromMap(map["orderFood"] as Map));
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       "orderID": orderID,
       "orderDate": orderDate,
       "orderSum": orderSum,
       "orderQuantity": orderQuantity,
       "userID": userID,
-      "orderFood": orderFood?.map((e) => e.toMap())
+      "orderFood": orderFood.toMap(),
     };
   }
 }

@@ -16,13 +16,13 @@ class ProductPopular extends StatefulWidget {
 }
 
 class _ProductPopularState extends State<ProductPopular> {
-
   late FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
   late DatabaseReference databaseReference = firebaseDatabase.ref("foods");
 
-  Future productFunc() async{
+  Future productFunc() async {
     print('product');
   }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -30,55 +30,67 @@ class _ProductPopularState extends State<ProductPopular> {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          TitleCate.base(titleCate: "Popular Products",seeMore: productFunc,),
-          SizedBox(height: 10,),
-          Container(
-            child: FutureBuilder(
-              future: databaseReference.get(),
-              builder: (context, snapShot){
-                if(snapShot.hasData){
-                  return GridView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      primary: false,
-                      itemCount: snapShot.data!.children.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                        childAspectRatio: 0.7,
-                      ),
-                      itemBuilder: (context, index){
-                        var value = snapShot.data!.children.elementAt(index);
-                        Food food = Food(
-                            name: value.child("name").value.toString(),
-                            image: value.child("image").value.toString(),
-                            description: value.child("description").value.toString(),
-                            price: value.child("price").value as int,
-                            rate: value.child("rate").value as int,
-                            resKey: value.child("resKey").value.toString(),
-                            foodKey: value.child("foodKey").value.toString());
-
-                        return _productItem(food);
-                      });
-                }
-                else{
-                  return const Center(child: CircularProgressIndicator());
-                }
-              },
-            )
+          TitleCate.base(
+            titleCate: "Popular Products",
+            seeMore: productFunc,
           ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+              child: FutureBuilder(
+            future: databaseReference.get(),
+            builder: (context, snapShot) {
+              if (snapShot.hasData) {
+                return GridView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    primary: false,
+                    itemCount: snapShot.data!.children.length,
+                    physics: BouncingScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      // mainAxisExtent: 256,
+                      childAspectRatio: 0.7,
+                    ),
+                    itemBuilder: (context, index) {
+                      var value = snapShot.data!.children.elementAt(index);
+                      Food food = Food(
+                          name: value.child("name").value.toString(),
+                          image: value.child("image").value.toString(),
+                          description:
+                              value.child("description").value.toString(),
+                          price: value.child("price").value as int,
+                          rate: value.child("rate").value as int,
+                          resKey: value.child("resKey").value.toString(),
+                          foodKey: value.child("foodKey").value.toString());
+
+                      return _productItem(food);
+                    });
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          )),
         ],
       ),
     );
   }
-  _productItem(Food food){
+
+  _productItem(Food food) {
     double contentWidth = min(MediaQuery.of(context).size.width, 700);
     int count = contentWidth ~/ 100;
     double cardSize = (contentWidth - 8.0 * 2 - (count - 1) * 8.0) / count;
     return GestureDetector(
-      onTap: (){
-        nextScreen(context, ProductDetails(food: food,));
+      onTap: () {
+        nextScreen(
+            context,
+            ProductDetails(
+              food: food,
+            ));
       },
       child: Container(
         decoration: BoxDecoration(
@@ -90,14 +102,16 @@ class _ProductPopularState extends State<ProductPopular> {
             SizedBox(
               width: cardSize,
               height: cardSize,
-              child: Image.network(food.image,
+              child: Image.network(
+                food.image,
                 fit: BoxFit.fill,
               ),
             ),
             Container(
               padding: EdgeInsets.only(left: 4),
-              width: cardSize-4,
-              child: Text(food.name,
+              width: cardSize - 4,
+              child: Text(
+                food.name,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 16,
@@ -107,7 +121,7 @@ class _ProductPopularState extends State<ProductPopular> {
             ),
             Container(
               padding: EdgeInsets.only(left: 4),
-              width: cardSize-4,
+              width: cardSize - 4,
               child: TextWidget().default_price(text: food.price.toString()),
             ),
           ],
