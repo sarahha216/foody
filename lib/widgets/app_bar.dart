@@ -34,7 +34,7 @@ class AppBarWidget {
         ));
   }
 
-  static info({required BuildContext context}) {
+  static info({required BuildContext context, VoidCallback? voidCallback}) {
     return AppBar(
       backgroundColor: Colors.green,
       elevation: 0,
@@ -50,7 +50,7 @@ class AppBarWidget {
             ),
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: voidCallback,
             child: Text(
               "Save",
               style: TextStyle(
