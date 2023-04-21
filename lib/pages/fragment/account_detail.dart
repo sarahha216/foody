@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foody/data/handle/auth_service.dart';
 import 'package:foody/pages/pages.dart';
+import 'package:foody/widgets/app_bar.dart';
 import 'package:foody/widgets/button_continue_widget.dart';
 import 'package:foody/widgets/navigator_widget.dart';
 import 'package:foody/widgets/social_widget.dart';
@@ -35,33 +35,48 @@ class _AccountDetailState extends State<AccountDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: SingleChildScrollView(
+    return Scaffold(
+      appBar: AppBarWidget.info(context: context),
+      body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(
               children: [
-                SizedBox(height: 30,),
+                SizedBox(
+                  height: 30,
+                ),
                 emailTextFormField(),
-                SizedBox(height: 30,),
+                SizedBox(
+                  height: 30,
+                ),
                 passwordTextFormField(),
-                SizedBox(height: 30,),
+                SizedBox(
+                  height: 30,
+                ),
                 conformTextFormField(),
-                SizedBox(height: 30,),
-                ContinueButtonWidget.base(label: 'Sign out', voidCallback: (){
-                  signOut();
-                  nextScreenRemove(context, SignInPage());
-                }),
-                SizedBox(height: 30,),
+                SizedBox(
+                  height: 30,
+                ),
+                ContinueButtonWidget.base(
+                    label: 'Sign out',
+                    voidCallback: () {
+                      signOut();
+                      nextScreenRemove(context, SignInPage());
+                    }),
+                SizedBox(
+                  height: 30,
+                ),
                 SocialButtonWidget.base(),
               ],
             ),
-          ),),
+          ),
+        ),
       ),
     );
   }
+
   TextFormField nameTextFormField() {
     return TextFormField(
       controller: name,
@@ -74,6 +89,7 @@ class _AccountDetailState extends State<AccountDetail> {
       ),
     );
   }
+
   TextFormField addressTextFormField() {
     return TextFormField(
       controller: address,
@@ -86,6 +102,7 @@ class _AccountDetailState extends State<AccountDetail> {
       ),
     );
   }
+
   TextFormField mobileTextFormField() {
     return TextFormField(
       controller: moblie,
@@ -98,6 +115,7 @@ class _AccountDetailState extends State<AccountDetail> {
       ),
     );
   }
+
   TextFormField emailTextFormField() {
     return TextFormField(
       controller: email,
@@ -109,13 +127,14 @@ class _AccountDetailState extends State<AccountDetail> {
         suffixIcon: Icon(Icons.email_outlined),
       ),
       // validator: Utilities.vafidateEmail,
-      onSaved: (value){
+      onSaved: (value) {
         setState(() {
           // email.text = value;
         });
       },
     );
   }
+
   TextFormField passwordTextFormField() {
     return TextFormField(
       key: _passKey,
@@ -129,9 +148,9 @@ class _AccountDetailState extends State<AccountDetail> {
         suffixIcon: Icon(Icons.lock_outline),
       ),
       // validator: Utilities.vafidateEmail,
-
     );
   }
+
   TextFormField conformTextFormField() {
     return TextFormField(
       controller: conform,
