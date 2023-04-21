@@ -10,25 +10,32 @@ class NotificationDetail extends StatefulWidget {
 class _NotificationDetailState extends State<NotificationDetail> {
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Notification"),
+        centerTitle: true,
+        elevation: 0,
+      ),
+      body: Container(
         child: ListView.builder(
           itemCount: 3,
-          itemBuilder: (context, index){
-            return ProductItemList();
-          },),
-      ),);
+          itemBuilder: (context, index) {
+            return NotificationList();
+          },
+        ),
+      ),
+    );
   }
 }
 
-class ProductItemList extends StatefulWidget {
-  const ProductItemList({Key? key}) : super(key: key);
+class NotificationList extends StatefulWidget {
+  const NotificationList({Key? key}) : super(key: key);
 
   @override
-  State<ProductItemList> createState() => _ProductItemListState();
+  State<NotificationList> createState() => _NotificationListState();
 }
 
-class _ProductItemListState extends State<ProductItemList> {
+class _NotificationListState extends State<NotificationList> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -39,25 +46,35 @@ class _ProductItemListState extends State<ProductItemList> {
             SizedBox(
               width: 100,
               height: 100,
-              child: Image.asset('assets/images/ic_black_coffee.png', fit: BoxFit.fill,),
-            ),
-            SizedBox(width: 5,),
-            Expanded(child: SizedBox(
-              height: 100,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('product.title'),
-                  Expanded(child: Text('product.description',maxLines: 5,
-                    overflow: TextOverflow.ellipsis,
-                  ),)
-                ],
+              child: Image.asset(
+                'assets/images/ic_black_coffee.png',
+                fit: BoxFit.fill,
               ),
-            ),),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Expanded(
+              child: SizedBox(
+                height: 100,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('product.title'),
+                    Expanded(
+                      child: Text(
+                        'product.description',
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
-

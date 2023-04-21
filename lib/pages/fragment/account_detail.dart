@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:foody/data/handle/auth_service.dart';
-import 'package:foody/pages/pages.dart';
-import 'package:foody/widgets/app_bar.dart';
-import 'package:foody/widgets/button_continue_widget.dart';
+import 'package:foody/pages/change_password.dart';
+import 'package:foody/pages/sign_in_page.dart';
+import 'package:foody/widgets/avatar_widget.dart';
+import 'package:foody/widgets/list_title_widget.dart';
 import 'package:foody/widgets/navigator_widget.dart';
-import 'package:foody/widgets/social_widget.dart';
 
 class AccountDetail extends StatefulWidget {
   const AccountDetail({Key? key}) : super(key: key);
@@ -26,6 +27,10 @@ class _AccountDetailState extends State<AccountDetail> {
   final _formKey = GlobalKey<FormState>();
   var _passKey = GlobalKey<FormFieldState>();
 
+  String uid = FirebaseAuth.instance.currentUser!.uid;
+  FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
+  late DatabaseReference databaseReference = firebaseDatabase.ref('users');
+
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   AuthService authService = AuthService();
 
@@ -36,138 +41,56 @@ class _AccountDetailState extends State<AccountDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget.info(context: context),
+      backgroundColor: Colors.grey.shade50,
+      appBar: AppBar(
+        title: Text("Account"),
+        elevation: 0,
+      ),
       body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 30,
+        child: StreamBuilder(
+          stream: databaseReference.child(uid).onValue,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              var user = snapshot.data!.snapshot;
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+                child: Column(
+                  children: [
+                    AvatarWidget.base(
+                        size: 80.0,
+                        isBorder: true,
+                        name: "${user.child("name").value}"),
+                    SizedBox(
+                      height: 12.0,
+                    ),
+                    ListTitleWidget.base(
+                        content: "Change password",
+                        prefixIcon: Icons.key,
+                        iconColor: Colors.black87,
+                        onTap: () {
+                          nextScreen(context, ChangePassword());
+                        }),
+                    ListTitleWidget.base(
+                        content: "Log out",
+                        prefixIcon: Icons.lock,
+                        iconColor: Colors.red,
+                        contentStyle:
+                            const TextStyle(fontSize: 18.0, color: Colors.red),
+                        onTap: () {
+                          signOut();
+                          nextScreenRemove(context, SignInPage());
+                        })
+                  ],
                 ),
-                emailTextFormField(),
-                SizedBox(
-                  height: 30,
-                ),
-                passwordTextFormField(),
-                SizedBox(
-                  height: 30,
-                ),
-                conformTextFormField(),
-                SizedBox(
-                  height: 30,
-                ),
-                ContinueButtonWidget.base(
-                    label: 'Sign out',
-                    voidCallback: () {
-                      signOut();
-                      nextScreenRemove(context, SignInPage());
-                    }),
-                SizedBox(
-                  height: 30,
-                ),
-                SocialButtonWidget.base(),
-              ],
-            ),
-          ),
+              );
+            } else {
+              return Center(
+                child: Text(""),
+              );
+            }
+          },
         ),
       ),
-    );
-  }
-
-  TextFormField nameTextFormField() {
-    return TextFormField(
-      controller: name,
-      keyboardType: TextInputType.name,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: "Enter your name",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.person_outline),
-      ),
-    );
-  }
-
-  TextFormField addressTextFormField() {
-    return TextFormField(
-      controller: address,
-      keyboardType: TextInputType.streetAddress,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: "Enter your address",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.home_outlined),
-      ),
-    );
-  }
-
-  TextFormField mobileTextFormField() {
-    return TextFormField(
-      controller: moblie,
-      keyboardType: TextInputType.phone,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: "Enter your moblie",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.phone),
-      ),
-    );
-  }
-
-  TextFormField emailTextFormField() {
-    return TextFormField(
-      controller: email,
-      keyboardType: TextInputType.emailAddress,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: "Enter your email",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.email_outlined),
-      ),
-      // validator: Utilities.vafidateEmail,
-      onSaved: (value) {
-        setState(() {
-          // email.text = value;
-        });
-      },
-    );
-  }
-
-  TextFormField passwordTextFormField() {
-    return TextFormField(
-      key: _passKey,
-      controller: password,
-      obscureText: true,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: "Enter your password",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.lock_outline),
-      ),
-      // validator: Utilities.vafidateEmail,
-    );
-  }
-
-  TextFormField conformTextFormField() {
-    return TextFormField(
-      controller: conform,
-      obscureText: true,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        hintText: "Re-enter your password",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.lock_outline),
-      ),
-      // validator: Utilities.vafidateEmail,
-      onSaved: (value) {
-        setState(() {
-          // conform.text = value;
-        });
-      },
     );
   }
 }
