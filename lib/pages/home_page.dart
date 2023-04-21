@@ -4,9 +4,6 @@ import 'package:foody/pages/fragment/favorite_fragment.dart';
 import 'package:foody/pages/fragment/home_fragment.dart';
 import 'package:foody/pages/fragment/order_fragment.dart';
 
-import 'header/home_header.dart';
-import 'header/menu_header.dart';
-
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -27,21 +24,21 @@ class _HomePageState extends State<HomePage> {
       AccountDetail(),
     ];
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: flag ? HomeHeader() : MenuHeader(),
-      ),
+      // appBar: AppBar(
+      //   automaticallyImplyLeading: false,
+      //   title: flag ? HomeHeader() : MenuHeader(),
+      // ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: selectIndex,
         onTap: (index) {
           setState(() {
             selectIndex = index;
-            if (selectIndex != 3) {
-              flag = true;
-            } else {
-              flag = false;
-            }
+            // if (selectIndex != 3) {
+            //   flag = true;
+            // } else {
+            //   flag = false;
+            // }
           });
         },
         items: [
@@ -54,16 +51,17 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(Icons.account_circle), label: "Account"),
         ],
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 10,
-            ),
-            screen[selectIndex]
-          ],
-        ),
-      ),
+      body: screen[selectIndex],
+      // SafeArea(
+      //   child: Column(
+      //     children: [
+      //       SizedBox(
+      //         height: 10,
+      //       ),
+      //       screen[selectIndex]
+      //     ],
+      //   ),
+      // ),
     );
   }
 }

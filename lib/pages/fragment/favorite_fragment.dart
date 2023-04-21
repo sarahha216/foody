@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:foody/data/handle/database_service.dart';
 import 'package:foody/data/models/food.dart';
+import 'package:foody/widgets/app_bar.dart';
 
 class FavoriteDetail extends StatefulWidget {
   const FavoriteDetail({Key? key}) : super(key: key);
@@ -32,27 +33,29 @@ class _FavoriteDetailState extends State<FavoriteDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: Container(
-      child: FutureBuilder(
-        future: _future,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData || snapshot.data == null) {
-            return Center(
-              child: Text(''),
-            );
-          } else {
-            return ListView.builder(
-                itemCount: snapshot.data?.children.length,
-                itemBuilder: (context, index) {
-                  Food food = Food.fromMap(
-                      snapshot.data?.children.elementAt(index).value as Map);
-                  return ProductItemList(food);
-                });
-          }
-        },
-      ),
-    ));
+    return Scaffold(
+        appBar: AppBarWidget.search(context: context),
+        body: Container(
+          child: FutureBuilder(
+            future: _future,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData || snapshot.data == null) {
+                return Center(
+                  child: Text(''),
+                );
+              } else {
+                return ListView.builder(
+                    itemCount: snapshot.data?.children.length,
+                    itemBuilder: (context, index) {
+                      Food food = Food.fromMap(snapshot.data?.children
+                          .elementAt(index)
+                          .value as Map);
+                      return ProductItemList(food);
+                    });
+              }
+            },
+          ),
+        ));
   }
 
   ProductItemList(Food food) {
