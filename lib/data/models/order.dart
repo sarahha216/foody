@@ -32,7 +32,7 @@ class Order {
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       "orderID": orderID,
       "orderDate": orderDate,
       "orderSum": orderSum,
