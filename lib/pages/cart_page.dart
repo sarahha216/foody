@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:foody/data/models/cart_item.dart';
 import 'package:foody/widgets/navigator_widget.dart';
+import 'package:foody/widgets/widgets.dart';
 import 'package:intl/intl.dart';
 
 class CartPage extends StatefulWidget {
@@ -36,7 +37,7 @@ class _CartPageState extends State<CartPage> {
             .reduce((a, b) => (a + b));
       });
 
-      print(sum);
+      //print(sum);
     } else {
       setState(() {
         sum = 0;
@@ -56,14 +57,21 @@ class _CartPageState extends State<CartPage> {
           .reduce((a, b) => (a + b));
       //print(tempQuantity);
 
-      await firebaseDatabase.ref('orders').child(uid).child(tempID).set({
-        'orderID': tempID,
-        'oderDate': tempDate,
-        'orderSum': sum,
-        'orderQuantity': tempQuantity,
-        'userID': uid,
-        'orderFood': data,
-      });
+      //print(data!.length);
+      //print(data!.values.toList().toString());
+      List e = data!.values.toList();
+      print(e.toString());
+      Map? a;
+      for (int i = 0; i < data!.length; i++) {
+        firebaseDatabase.ref('orders').child(uid).child(tempID).set({
+          'orderID': tempID,
+          'orderDate': tempDate,
+          'orderSum': sum,
+          'orderQuantity': tempQuantity,
+          'userID': uid,
+          'orderFood': e,
+        });
+      }
       await databaseReference.child(uid).child('cart').remove();
       setState(() {
         loadData();
@@ -73,7 +81,9 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
     return Scaffold(
       appBar: AppBar(
         title: Text("Cart"),
@@ -109,33 +119,34 @@ class _CartPageState extends State<CartPage> {
         children: [
           Expanded(
               child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-                color: Colors.white, border: Border.all(color: Colors.green)),
-            height: 48,
-            child: Text("Total: $sum",
-                style: const TextStyle(
-                    color: Colors.green,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0)),
-          )),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.green)),
+                height: 48,
+                child: Text("Total: $sum",
+                    style: const TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18.0)),
+              )),
           Expanded(
               child: Container(
-            height: 48,
-            child: ElevatedButton(
-              onPressed: () {
-                checkOut();
-              },
-              child: Text('Check out'),
-              style: ButtonStyle(
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                      //borderRadius: BorderRadius.circular(16),
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () {
+                    checkOut();
+                  },
+                  child: Text('Check out'),
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        //borderRadius: BorderRadius.circular(16),
                       ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          )),
+              )),
         ],
       ),
     );
@@ -157,7 +168,10 @@ class _CartPageState extends State<CartPage> {
               itemCount: snapshot.data!.children.length,
               itemBuilder: (context, index) {
                 CartItem cartItem = CartItem.fromMap(
-                    snapshot.data!.children.elementAt(index).value as Map);
+                    snapshot.data!
+                        .children
+                        .elementAt(index)
+                        .value as Map);
                 print(cartItem);
                 return SizedBox(
                   child: Column(
@@ -182,8 +196,10 @@ class _CartPageState extends State<CartPage> {
                                 SizedBox(
                                   height: 5,
                                 ),
-                                Text(cartItem.food.price.toString() + " VND",
-                                    style: const TextStyle(fontSize: 16)),
+                                TextWidget().default_price(
+                                    text: cartItem.food.price.toString(),
+                                    fontSize: 16),
+
                               ],
                             ),
                           ),

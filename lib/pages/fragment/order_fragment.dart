@@ -1,8 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:foody/data/models/order.dart';
+import 'package:foody/pages/order_details.dart';
 import 'package:foody/widgets/app_bar.dart';
 import 'package:foody/widgets/image_path.dart';
+import 'package:foody/widgets/navigator_widget.dart';
+import 'package:foody/widgets/widgets.dart';
 
 class OrderFragment extends StatefulWidget {
   const OrderFragment({Key? key}) : super(key: key);
@@ -28,19 +32,10 @@ class _OrderFragmentState extends State<OrderFragment> {
                 return ListView.builder(
                     itemCount: snapshot.data!.children.length,
                     itemBuilder: (context, index) {
-                      var v = snapshot.data!.children.elementAt(index);
-                      // Order order = Order.fromJson(
-                      //     snapshot.data!.children.elementAt(index).value as Map);
-                      print(v.toString());
-                      // Order order = Order(
-                      //   orderID: v.child("orderID").value.toString(),
-                      //   orderDate: v.child("orderDate").value.toString(),
-                      //   orderSum: v.child("orderSum").value as int,
-                      //   orderQuantity: v.child("orderQuantity").value as int,
-                      //   userID: v.child("userID").value.toString(),
-                      //   orderFood: v.child('orderFood').value,
-                      // );
-                      return _orderList();
+                      Order order = Order.fromJson(snapshot.data!.children
+                          .elementAt(index)
+                          .value as Map);
+                      return _orderList(order);
                     });
               } else {
                 return const Center(child: CircularProgressIndicator());
@@ -50,45 +45,57 @@ class _OrderFragmentState extends State<OrderFragment> {
         ));
   }
 
-  _orderList() {
-    return Padding(
-      padding: EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTap: () async {},
-        child: Container(
-          child: Row(
-            children: [
-              SizedBox(
-                width: 90,
+  _orderList(Order order) {
+    return GestureDetector(
+      onTap: () async {
+        nextScreen(
+            context,
+            OrderDetails(
+              orderFood: order.orderFood,
+            ));
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border(
+                bottom: BorderSide(color: Colors.grey.shade200, width: 1.2))),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 90,
+              height: 100,
+              child: Image.asset(
+                ImagePath.purchased,
+                fit: BoxFit.fill,
+              ),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Expanded(
+              child: SizedBox(
                 height: 100,
-                child: Image.asset(
-                  ImagePath.purchased,
-                  fit: BoxFit.fill,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(order.orderDate,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          overflow: TextStyle().overflow,
+                        )),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    TextWidget().default_price(
+                        text: order.orderSum.toString(), fontSize: 16),
+                  ],
                 ),
               ),
-              SizedBox(
-                width: 5,
-              ),
-              Expanded(
-                child: SizedBox(
-                  height: 100,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('product.title'),
-                      Expanded(
-                        child: Text(
-                          'product.description',
-                          maxLines: 5,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

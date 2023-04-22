@@ -80,9 +80,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                 SizedBox(
                   height: 8,
                 ),
-                TextWidget().price(
-                  text: widget.food.price.toString(),
-                ),
+                TextWidget().default_price(
+                    text: widget.food.price.toString(),
+                    fontSize: 21,
+                    color: Colors.red),
                 SizedBox(
                   height: 8,
                 ),

@@ -132,8 +132,8 @@ class _ProductPopularState extends State<ProductPopular> {
                 Container(
                   padding: EdgeInsets.only(left: 4),
                   width: cardSize - 4,
-                  child:
-                      TextWidget().default_price(text: food.price.toString()),
+                  child: TextWidget().default_price(
+                      text: food.price.toString(), color: Colors.red),
                 ),
               ],
             ),

@@ -138,10 +138,10 @@ class _AddToCartPageState extends State<AddToCartPage> {
                 "Total: ",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
-              Text(
-                "${formater.format(int.parse("${widget.cartItem.food.price * quantity}"))} VND",
-                style: TextStyle(color: Colors.red, fontSize: 18),
-              ),
+              TextWidget().default_price(
+                  text: "${widget.cartItem.food.price * quantity}",
+                  fontSize: 18,
+                  color: Colors.red),
             ],
           ),
         ),
