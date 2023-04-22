@@ -59,18 +59,26 @@ class _NotificationListState extends State<NotificationList> {
                 height: 100,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('product.title'),
-                    Expanded(
-                      child: Text(
-                        'product.description',
-                        maxLines: 5,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    )
+                    Text(
+                      'product.title',
+                      maxLines: 3,
+                      overflow: TextOverflow.clip,
+                    ),
                   ],
                 ),
               ),
+            ),
+            IconButton(
+              iconSize: 24,
+              splashRadius: 15,
+              color: Colors.green,
+              icon: const Icon(
+                Icons.notifications_active_rounded,
+                color: Colors.red,
+              ),
+              onPressed: () {},
             ),
           ],
         ),
