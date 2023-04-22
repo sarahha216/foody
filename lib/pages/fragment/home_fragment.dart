@@ -44,36 +44,32 @@ class _HomeDetailState extends State<HomeDetail> {
               ],
             ),
           ),
-          Positioned(
-            right: 16,
-            bottom: 0,
-            child: Container(
-                color: Colors.transparent,
-                child: Stack(
-                  children: [
-                    FloatingActionButton(
-                      onPressed: () {
-                        nextScreen(context, const CartPage());
-                      },
-                      child: const Icon(Icons.shopping_cart),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 38),
-                      alignment: Alignment.center,
-                      width: 16,
-                      height: 16,
-                      decoration: const BoxDecoration(
-                          shape: BoxShape.circle, color: Colors.white),
-                      child: Text(
-                        "$quantity",
-                        style: const TextStyle(color: Colors.green),
-                      ),
-                    )
-                  ],
-                )),
-          )
         ],
       ),
+      floatingActionButton: Container(
+          color: Colors.transparent,
+          child: Stack(
+            children: [
+              FloatingActionButton(
+                onPressed: () {
+                  nextScreen(context, const CartPage());
+                },
+                child: const Icon(Icons.shopping_cart),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 38),
+                alignment: Alignment.center,
+                width: 16,
+                height: 16,
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle, color: Colors.white),
+                child: Text(
+                  "$quantity",
+                  style: const TextStyle(color: Colors.green),
+                ),
+              )
+            ],
+          )),
     );
   }
 }

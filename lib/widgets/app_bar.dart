@@ -38,6 +38,7 @@ class AppBarWidget {
     return AppBar(
       backgroundColor: Colors.green,
       elevation: 0,
+      centerTitle: true,
       title: Row(
         children: [
           Expanded(
