@@ -32,7 +32,8 @@ class _HomeDetailState extends State<HomeDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget.search(context: context),
+      appBar:
+          AppBarWidget.search(context: context, onChanged: (String value) {}),
       body: Stack(
         children: [
           SingleChildScrollView(

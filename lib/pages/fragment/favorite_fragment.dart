@@ -41,7 +41,7 @@ class _FavoriteDetailState extends State<FavoriteDetail> {
             builder: (context, snapshot) {
               if (!snapshot.hasData || snapshot.data == null) {
                 return Center(
-                  child: Text(''),
+                  child: CircularProgressIndicator(),
                 );
               } else {
                 return ListView.builder(
@@ -116,67 +116,3 @@ class _FavoriteDetailState extends State<FavoriteDetail> {
     );
   }
 }
-
-// class ProductItemList extends StatelessWidget {
-//   final Food food;
-//
-//   const ProductItemList({Key? key, required this.food}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: EdgeInsets.all(8.0),
-//       child: GestureDetector(
-//         onTap: () {
-//           print(FirebaseAuth.instance.currentUser!);
-//         },
-//         child: Container(
-//           child: Row(
-//             children: [
-//               SizedBox(
-//                 width: 100,
-//                 height: 100,
-//                 child: Image.network(
-//                   food.image,
-//                   fit: BoxFit.fill,
-//                 ),
-//               ),
-//               SizedBox(
-//                 width: 5,
-//               ),
-//               Expanded(
-//                 child: SizedBox(
-//                   height: 100,
-//                   child: Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     mainAxisAlignment: MainAxisAlignment.center,
-//                     children: [
-//                       Text(food.name,
-//                           style: TextStyle(
-//                             fontSize: 16,
-//                             overflow: TextStyle().overflow,
-//                           )),
-//                     ],
-//                   ),
-//                 ),
-//               ),
-//               IconButton(
-//                 iconSize: 24,
-//                 splashRadius: 15,
-//                 color: Colors.green,
-//                 icon: const Icon(
-//                   Icons.favorite,
-//                   color: Colors.red,
-//                 ),
-//                 onPressed: () {
-//                   DatabaseService databaseService = DatabaseService();
-//                   databaseService.removeFavorite(foodKey: food.foodKey);
-//                 },
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

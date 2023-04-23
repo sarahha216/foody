@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:foody/pages/sign_in_page.dart';
 
 import 'pages/splash_page.dart';
 
@@ -22,7 +23,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
       ),
       home: const SplashPage(),
+      routes: {
+        '/signIn': (context) => const SignInPage(),
+      },
     );
   }
 }
-
