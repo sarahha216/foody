@@ -3,7 +3,8 @@ import 'package:foody/pages/fragment/notification_fragment.dart';
 import 'package:foody/widgets/navigator_widget.dart';
 
 class AppBarWidget {
-  static search({required BuildContext context}) {
+  static search(
+      {required BuildContext context, ValueChanged<String>? onChanged}) {
     return AppBar(
         backgroundColor: Colors.green,
         elevation: 0,
@@ -11,6 +12,7 @@ class AppBarWidget {
           children: [
             Expanded(
               child: TextField(
+                onChanged: onChanged,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,

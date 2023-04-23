@@ -24,21 +24,12 @@ class _HomePageState extends State<HomePage> {
       AccountDetail(),
     ];
     return Scaffold(
-      // appBar: AppBar(
-      //   automaticallyImplyLeading: false,
-      //   title: flag ? HomeHeader() : MenuHeader(),
-      // ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: selectIndex,
         onTap: (index) {
           setState(() {
             selectIndex = index;
-            // if (selectIndex != 3) {
-            //   flag = true;
-            // } else {
-            //   flag = false;
-            // }
           });
         },
         items: [
@@ -52,16 +43,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: screen[selectIndex],
-      // SafeArea(
-      //   child: Column(
-      //     children: [
-      //       SizedBox(
-      //         height: 10,
-      //       ),
-      //       screen[selectIndex]
-      //     ],
-      //   ),
-      // ),
+
     );
   }
 }
