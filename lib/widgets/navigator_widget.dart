@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-void nextScreen(context, page) {
-  Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+Future<void> nextScreen(context, page) async {
+  await Navigator.push(context, MaterialPageRoute(builder: (context) => page));
 }
 
 void nextScreenRemove(context, page) {
