@@ -7,7 +7,6 @@ import 'package:foody/pages/home_page.dart';
 import 'package:foody/pages/sign_up_page.dart';
 import 'package:foody/widgets/button_continue_widget.dart';
 import 'package:foody/widgets/navigator_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/social_widget.dart';
 
@@ -60,7 +59,6 @@ class SignInForm extends StatefulWidget {
 
 class _SignInFormState extends State<SignInForm> {
   final _formKey = GlobalKey<FormState>();
-  bool _value = false;
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   AuthService authService = AuthService();
@@ -74,17 +72,6 @@ class _SignInFormState extends State<SignInForm> {
   @override
   void initState() {
     super.initState();
-    // _getData();
-  }
-
-  _getData() async {
-    prefs = await SharedPreferences.getInstance();
-    if (!prefs.getString('username').isEmpty()) {
-      username.text = prefs.getString('username');
-      password.text = prefs.getString('password');
-      _value = prefs.getBool('check');
-    }
-    ;
   }
 
   login() async {

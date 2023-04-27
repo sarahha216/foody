@@ -4,7 +4,9 @@ import 'package:foody/widgets/navigator_widget.dart';
 
 class AppBarWidget {
   static search(
-      {required BuildContext context, ValueChanged<String>? onChanged}) {
+      {required BuildContext context,
+      ValueChanged<String>? onChanged,
+      controller}) {
     return AppBar(
         backgroundColor: Colors.green,
         elevation: 0,
@@ -12,6 +14,7 @@ class AppBarWidget {
           children: [
             Expanded(
               child: TextField(
+                controller: controller,
                 onChanged: onChanged,
                 decoration: InputDecoration(
                   filled: true,
