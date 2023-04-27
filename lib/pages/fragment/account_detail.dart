@@ -7,6 +7,7 @@ import 'package:foody/pages/sign_in_page.dart';
 import 'package:foody/widgets/avatar_widget.dart';
 import 'package:foody/widgets/list_title_widget.dart';
 import 'package:foody/widgets/navigator_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountDetail extends StatefulWidget {
   const AccountDetail({Key? key}) : super(key: key);
@@ -36,6 +37,8 @@ class _AccountDetailState extends State<AccountDetail> {
 
   Future signOut() async {
     await firebaseAuth.signOut();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
   }
 
   @override
