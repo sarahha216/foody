@@ -5,17 +5,20 @@ class Order {
   String orderDate;
   int orderSum;
   int orderQuantity;
-  String userID;
+  String userName;
+  String address;
 
   List<CartItem> orderFood;
 
-  Order(
-      {required this.orderID,
-      required this.orderDate,
-      required this.orderSum,
-      required this.orderQuantity,
-      required this.userID,
-      required this.orderFood});
+  Order({
+    required this.orderID,
+    required this.orderDate,
+    required this.orderSum,
+    required this.orderQuantity,
+    required this.userName,
+    required this.address,
+    required this.orderFood,
+  });
 
   factory Order.fromJson(Map map) {
     return Order(
@@ -23,7 +26,8 @@ class Order {
         orderDate: map["orderDate"],
         orderSum: map["orderSum"] as int,
         orderQuantity: map["orderQuantity"] as int,
-        userID: map["userID"],
+        userName: map["userName"],
+        address: map["address"],
         orderFood: map["orderFood"] != null
             ? (map["orderFood"] as List)
                 .map((e) => CartItem.fromMap(e))
@@ -37,7 +41,8 @@ class Order {
       "orderDate": orderDate,
       "orderSum": orderSum,
       "orderQuantity": orderQuantity,
-      "userID": userID,
+      "userName": userName,
+      "address": address,
       "orderFood": orderFood.map((e) => e.toMap()),
     };
   }

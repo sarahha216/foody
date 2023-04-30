@@ -26,7 +26,7 @@ class _HomeDetailState extends State<HomeDetail> {
   int quantity = 0;
 
   late Future _future;
-  List<Food> foodList = [];
+  List<Food> foodList = <Food>[];
   List<Food>? searchList;
 
   final searchString = TextEditingController();
@@ -40,6 +40,7 @@ class _HomeDetailState extends State<HomeDetail> {
 
   @override
   void dispose() {
+    getAllProduct();
     searchString.dispose();
     super.dispose();
   }
@@ -64,6 +65,7 @@ class _HomeDetailState extends State<HomeDetail> {
               resKey: e.value['resKey'],
               foodKey: e.value['foodKey']))
           .toList();
+      setState(() {});
     } else {
       foodList = [];
     }

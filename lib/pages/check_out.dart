@@ -1,8 +1,13 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:foody/widgets/navigator_widget.dart';
 import 'package:foody/widgets/widgets.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
 class CheckOut extends StatefulWidget {
@@ -27,16 +32,78 @@ class _CheckOutState extends State<CheckOut> {
   FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
   late DatabaseReference databaseReference = firebaseDatabase.ref('users');
 
+  final Completer<GoogleMapController> _googleMapController = Completer();
+  late GoogleMapController _newGoogleMapController;
+  late Position _currentPosition;
+
+  String address = "";
+  String userName = "";
+
+  static const CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(10.762622, 106.660172),
+    zoom: 14,
+  );
+
+  Set<Marker> _markers = {};
+
   @override
   void initState() {
     // TODO: implement initState
     sum = widget.sum;
     quan = widget.quantity;
     list = widget.e;
+    getName();
     super.initState();
   }
 
-  order() async {
+  Future<void> getName() async {
+    databaseReference.child(uid).get().then((v) {
+      userName = v.child("name").value.toString();
+    });
+  }
+
+  Future<void> getCurrentPosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled');
+    }
+
+    permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+
+      if (permission == LocationPermission.denied) {
+        return Future.error("Location permission denied");
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('Location permissions are permanently denied');
+    }
+
+    Position position = await Geolocator.getCurrentPosition();
+    LatLng latLng = LatLng(position.latitude, position.longitude);
+
+    CameraPosition cameraPosition =
+        new CameraPosition(target: latLng, zoom: 14);
+    _newGoogleMapController
+        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    _markers.add(Marker(markerId: MarkerId('My location'), position: latLng));
+
+    List<Placemark> placeMarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark placeMark = placeMarks[0];
+    address = "${placeMark.street}, ${placeMark.subAdministrativeArea}";
+
+    setState(() {});
+  }
+
+  Future<void> order() async {
     var tempDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
     var tempID = generateRandomString();
     firebaseDatabase.ref('orders').child(uid).child(tempID).set({
@@ -44,11 +111,12 @@ class _CheckOutState extends State<CheckOut> {
       'orderDate': tempDate,
       'orderSum': sum,
       'orderQuantity': quan,
-      'userID': uid,
+      'userName': userName,
+      'address': address.toString(),
       'orderFood': list,
     });
     await databaseReference.child(uid).child('cart').remove();
-    int counter = 3;
+    int counter = 2;
     Navigator.of(context).popUntil((route) => counter-- <= 0);
   }
 
@@ -63,8 +131,6 @@ class _CheckOutState extends State<CheckOut> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
-            // Navigator.push(context,
-            //     MaterialPageRoute(builder: (context) => HomeDetail())).then();
           },
         ),
       ),
@@ -73,11 +139,63 @@ class _CheckOutState extends State<CheckOut> {
           SingleChildScrollView(
             child: Column(
               children: [
+                _googleMap(size),
+                _info(size),
                 _cart(),
               ],
             ),
           ),
           _total(),
+        ],
+      ),
+    );
+  }
+
+  _googleMap(Size size) {
+    return Container(
+      width: size.width,
+      height: 300,
+      child: GoogleMap(
+        initialCameraPosition: _kGooglePlex,
+        markers: _markers,
+        myLocationEnabled: true,
+        zoomGesturesEnabled: true,
+        onMapCreated: (GoogleMapController controller) {
+          _googleMapController.complete(controller);
+          _newGoogleMapController = controller;
+          getCurrentPosition();
+        },
+      ),
+    );
+  }
+
+  _info(Size size) {
+    return Container(
+      width: size.width,
+      height: 100,
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Name: $userName",
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+            style: TextStyle(
+              fontSize: 18,
+            ),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          Text(
+            "Address: $address",
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+            style: TextStyle(
+              fontSize: 18,
+            ),
+          ),
         ],
       ),
     );

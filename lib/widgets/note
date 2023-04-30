@@ -1,6 +1,6 @@
 // var a = data.entries
-//     .where((e) => e.key.startsWith('price'))
-//     .map<int>((e) => e.value('sum'))
+//     .where((e) => e.key.startsWith('01-01-2023'))
+//     .map<int>((e) => e.value)
 //     .reduce((a, b) => a + b);
 
 //duyet map
@@ -11,8 +11,14 @@
 //   });
 // });
 
-//Update UI after removing items from List
-//https://stackoverflow.com/questions/51931017/update-ui-after-removing-items-from-list
+Update UI after removing items from List
+https://stackoverflow.com/questions/51931017/update-ui-after-removing-items-from-list
 
-//Usage of FutureBuilder with setState
-//https://stackoverflow.com/questions/52021205/usage-of-futurebuilder-with-setstate
+Usage of FutureBuilder with setState
+https://stackoverflow.com/questions/52021205/usage-of-futurebuilder-with-setstate
+
+How to Search in Flutter using ListView and GridView
+https://www.youtube.com/watch?v=2mnq9iGI6XY
+
+Get User Current location
+https://www.youtube.com/watch?v=0oxZh0qnlII&list=PLt-ifNEMILu4MCc-ZbsRysA4pWNkRCOJ_&index=65
