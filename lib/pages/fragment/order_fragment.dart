@@ -52,6 +52,8 @@ class _OrderFragmentState extends State<OrderFragment> {
             context,
             OrderDetails(
               orderFood: order.orderFood,
+              userName: order.userName,
+              address: order.address,
             ));
       },
       child: Container(
