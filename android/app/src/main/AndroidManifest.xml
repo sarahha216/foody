@@ -10,7 +10,7 @@
         android:label="foody">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAx4sJwhBtqNmf8k7eCdKwFYdSe8xNkXAQ" />
+            android:value="API_KEY" />
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
